@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter (SM M136B)",
+            "program": "lib/main.dart",
+            "deviceId": "RZCTA0M79FX",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

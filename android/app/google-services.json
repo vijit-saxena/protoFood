@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "8130781097",
+    "project_id": "protofood-vijisaxe",
+    "storage_bucket": "protofood-vijisaxe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8130781097:android:8a5508df39f319e1d92eb8",
+        "android_client_info": {
+          "package_name": "com.example.protofood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "8130781097-jgahjh1sivrf1dj56l8lgpqkfdun7ldo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.protofood",
+            "certificate_hash": "f2e8d37656537f24eefce92e2b21c79c62da96b9"
+          }
+        },
+        {
+          "client_id": "8130781097-v48sgi1bp1uqe4ij4qee3270oft4il55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiUeai9xQh5tpMcdNcU5BD_1yZqdxvV8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "8130781097-v48sgi1bp1uqe4ij4qee3270oft4il55.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "8130781097-fncskdtvbp3n6g9pc4oj3bpodkkijo8s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vijit.saxena.protofood"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
