@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:protofood/auth/auth_service.dart';
 
-import 'home.dart';
+import 'home_view.dart';
 
-class OTPScreen extends StatefulWidget {
+class OTPScreenView extends StatefulWidget {
   final String phone;
-  const OTPScreen(this.phone, {super.key});
+  const OTPScreenView(this.phone, {super.key});
 
   @override
-  State<OTPScreen> createState() => _OTPScreenState();
+  State<OTPScreenView> createState() => _OTPScreenViewState();
 }
 
-class _OTPScreenState extends State<OTPScreen> {
+class _OTPScreenViewState extends State<OTPScreenView> {
   late String _verificationCode;
   final pinController = TextEditingController();
   final focusNode = FocusNode();
@@ -80,7 +80,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     .then((value) {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => const Home()),
+                      MaterialPageRoute(builder: (context) => const HomeView()),
                       (route) => false);
                 });
               } catch (e) {
@@ -129,7 +129,7 @@ class _OTPScreenState extends State<OTPScreen> {
             .then((value) {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const Home()),
+              MaterialPageRoute(builder: (context) => const HomeView()),
               (route) => false);
         });
       },

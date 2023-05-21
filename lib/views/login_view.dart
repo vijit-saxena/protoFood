@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:protofood/otp.dart';
+import 'package:protofood/views/otp_view.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreenView extends StatefulWidget {
+  const LoginScreenView({super.key});
+
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreenView> createState() => _LoginScreenViewState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenViewState extends State<LoginScreenView> {
   TextEditingController _controller = TextEditingController();
 
   @override
@@ -22,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => OTPScreen(_controller.text)));
+                  builder: (context) => OTPScreenView(_controller.text)));
             },
             child: const Text("Login"),
           ),

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:protofood/home.dart';
-
-import 'auth/auth_service.dart';
-import 'login.dart';
+import 'package:protofood/auth/auth_service.dart';
+import 'package:protofood/views/home_view.dart';
+import 'package:protofood/views/login_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
     MaterialApp(
-      title: 'EaseIt',
+      title: 'ProtoFood',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -30,9 +29,9 @@ class HomePage extends StatelessWidget {
           case ConnectionState.done:
             final user = AuthService.firebase().currentUser;
             if (user != null) {
-              return const Home();
+              return const HomeView();
             } else {
-              return LoginScreen();
+              return const LoginScreenView();
             }
           default:
             return const CircularProgressIndicator();
