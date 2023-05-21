@@ -1,16 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
-import 'package:protofood/login.dart';
+import 'package:protofood/views/add_user_datails.dart';
+import 'package:protofood/views/login_view.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeViewState extends State<HomeView> {
   late String? uid;
 
   @override
@@ -30,11 +31,21 @@ class _HomeState extends State<Home> {
               child: Text(uid!),
             ),
             TextButton(
+              child: const Text("2 - Enter User Details Page"),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddUserDetailsView()));
+              },
+            ),
+            TextButton(
               onPressed: () {
                 AuthService.firebase().logOut().then((value) {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreenView()),
                       (route) => false);
                 });
               },
