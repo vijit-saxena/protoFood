@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "8130781097-fncskdtvbp3n6g9pc4oj3bpodkkijo8s.apps.googleusercontent.com",
+              "client_id": "8130781097-e93mp5o3p89pu9bqtfj9kbq623tlgkcb.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.vijit.saxena.protofood"
+                "bundle_id": "com.example.easeit"
               }
             }
           ]

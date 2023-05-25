@@ -4,6 +4,8 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_user_datails.dart';
 import 'package:protofood/views/login_view.dart';
 
+import '../google_maps/add_building_marker_view.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -38,6 +40,13 @@ class _HomeViewState extends State<HomeView> {
                     MaterialPageRoute(
                         builder: (context) => const AddUserDetailsView()));
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AddBuildingMarkerView()));
+              },
+              child: const Text("Add location"),
             ),
             TextButton(
               onPressed: () {
