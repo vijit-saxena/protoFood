@@ -1,7 +1,6 @@
 import "dart:convert";
 
 import "package:protofood/config/constants.dart";
-import "package:protofood/data_models/user_data_model";
 import "package:http/http.dart" as http;
 
 class DataplaneService {
@@ -24,13 +23,41 @@ class DataplaneService {
       body: body,
     );
 
-    print("Response status is : ${response.statusCode}");
-    // Map responseMap = jsonDecode(response.body);
+    print("Add User response status is : ${response.statusCode}");
+  }
 
-    // print("response body is : $responseMap");
+  static Future<void> addNewLocation(
+      String buildingName,
+      String roomNumber,
+      String latitude,
+      String longitude,
+      String landmark,
+      String shortName,
+      String userId) async {
+    Map data = {
+      "buildingName": buildingName,
+      "roomNumber": roomNumber,
+      "latitude": latitude,
+      "longitude": longitude,
+      "landmark": landmark,
+      "shortName": shortName,
+      "userId": userId
+    };
 
-    // UserDataModel user = UserDataModel.fromMap(responseMap);
-    // return user;
+    var body = jsonEncode(data);
+    var endpoint = Uri.parse(getAddNewLocationApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Add Location response status is : ${response.statusCode}");
+  }
+
+  static String getAddNewLocationApiEndpoint() {
+    return "$baseUrl/addLocation";
   }
 
   static String getAddUserApiEndpoint() {
