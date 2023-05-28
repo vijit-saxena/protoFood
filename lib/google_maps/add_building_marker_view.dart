@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:protofood/auth/auth_service.dart';
+import 'package:protofood/dataplane/dataplane_service.dart';
 
 class AddBuildingMarkerView extends StatefulWidget {
   const AddBuildingMarkerView({Key? key}) : super(key: key);
@@ -11,12 +13,14 @@ class AddBuildingMarkerView extends StatefulWidget {
 }
 
 class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
-  late GoogleMapController googleMapController;
+  late GoogleMapController mapController;
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
   TextEditingController roomNumberController = TextEditingController();
   TextEditingController buildingNameController = TextEditingController();
   TextEditingController landmarkController = TextEditingController();
   TextEditingController shortNameController = TextEditingController();
+
+  LatLng _draggedLocation = const LatLng(25.178409020688036, 75.92163739945082);
 
   @override
   void initState() {
@@ -26,85 +30,117 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   @override
   void dispose() {
     super.dispose();
+    roomNumberController.dispose();
+    buildingNameController.dispose();
+    landmarkController.dispose();
+    shortNameController.dispose();
+    mapController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: FutureBuilder<LatLng>(
-          future: _getCurrentPosition(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: screenHeight * 0.75,
-                    child: Stack(
+      body: FutureBuilder(
+        future: _getCurrentPosition(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  flex: 7,
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        onMapCreated: (GoogleMapController controller) {
+                          mapController = controller;
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: snapshot.requireData,
+                          zoom: 18.0,
+                        ),
+                        onCameraMove: (draggedPosition) {
+                          _draggedLocation = draggedPosition.target;
+                        },
+                      ),
+                      _getCustomPin(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            _gotoSpecficLocation(await _getCurrentPosition());
+                          },
+                          icon: const Icon(Icons.location_on),
+                          label: const Text("Fetch current location"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView(
                       children: [
-                        SizedBox(
-                          child: _getGoogleMap(context, snapshot),
-                          // _getCustomPin(),
-                        ),
-                        _getCustomPin(),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              _gotoSpecficLocation(await _getCurrentPosition());
-                            },
-                            icon: const Icon(Icons.location_on),
-                            label: const Text("Fetch current location"),
+                        TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Room Number',
                           ),
+                          controller: roomNumberController,
                         ),
+                        const SizedBox(height: 10.0),
+                        TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Building Name',
+                          ),
+                          controller: buildingNameController,
+                        ),
+                        const SizedBox(height: 10.0),
+                        TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Landmark',
+                          ),
+                          controller: landmarkController,
+                        ),
+                        const SizedBox(height: 10.0),
+                        TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Short Name',
+                          ),
+                          controller: shortNameController,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            String? currentUserPhoneNumber =
+                                AuthService.firebase().currentUser?.phoneNumber;
+                            print(
+                                "Location to add : ${snapshot.requireData.toJson()}");
+                            await DataplaneService.addNewLocation(
+                                    buildingNameController.text,
+                                    roomNumberController.text,
+                                    _draggedLocation.latitude.toString(),
+                                    _draggedLocation.longitude.toString(),
+                                    landmarkController.text,
+                                    shortNameController.text,
+                                    currentUserPhoneNumber!)
+                                .then((value) {
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          child: const Text("Submit"),
+                        )
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight * 0.25,
-                    child: _getDetailsSection(
-                        roomNumberController,
-                        buildingNameController,
-                        landmarkController,
-                        shortNameController),
-                  ),
-                ],
-              );
-            }
-          }),
-    );
-  }
-
-  Widget _getDetailsSection(
-      TextEditingController roomNumberController,
-      TextEditingController buildingNameController,
-      TextEditingController landmarkController,
-      TextEditingController shortNameController) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          TextField(
-            controller: roomNumberController,
-          ),
-          TextField(
-            controller: buildingNameController,
-          ),
-          TextField(
-            controller: landmarkController,
-          ),
-          TextField(
-            controller: shortNameController,
-          ),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.fork_right),
-            label: const Text("Submit"),
-          )
-        ],
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
@@ -118,19 +154,13 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
     );
   }
 
-  GoogleMap _getGoogleMap(
-      BuildContext context, AsyncSnapshot<LatLng> snapshot) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-            snapshot.requireData.latitude, snapshot.requireData.longitude),
-        zoom: 18,
+  Future _gotoSpecficLocation(LatLng latlng) async {
+    _draggedLocation = latlng;
+
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: latlng, zoom: 18),
       ),
-      zoomControlsEnabled: true,
-      mapType: MapType.normal,
-      onMapCreated: (GoogleMapController controller) {
-        googleMapController = controller;
-      },
     );
   }
 
@@ -170,13 +200,5 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
     }
 
     return true;
-  }
-
-  Future _gotoSpecficLocation(LatLng latlng) async {
-    googleMapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: latlng, zoom: 18),
-      ),
-    );
   }
 }

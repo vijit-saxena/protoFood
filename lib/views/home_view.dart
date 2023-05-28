@@ -46,7 +46,7 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const AddBuildingMarkerView()));
               },
-              child: const Text("Add location"),
+              child: const Text("3 - Add location"),
             ),
             TextButton(
               onPressed: () {
