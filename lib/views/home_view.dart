@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_user_datails.dart';
 import 'package:protofood/views/login_view.dart';
+import 'package:protofood/views/new_user_home_screen.dart';
 
 import '../google_maps/add_building_marker_view.dart';
 
@@ -47,6 +48,13 @@ class _HomeViewState extends State<HomeView> {
                     builder: (context) => const AddBuildingMarkerView()));
               },
               child: const Text("3 - Add location"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NewUserHomeScreen()));
+              },
+              child: const Text("4 - New User Home Screen"),
             ),
             TextButton(
               onPressed: () {
