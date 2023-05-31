@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/google_maps/maps.dart';
 
 class AddBuildingMarkerView extends StatefulWidget {
   const AddBuildingMarkerView({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: _getCurrentPosition(),
+        future: Maps.getCurrentPosition(_geolocatorPlatform),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -71,7 +72,8 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
                         alignment: Alignment.bottomCenter,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            _gotoSpecficLocation(await _getCurrentPosition());
+                            _gotoSpecficLocation(await Maps.getCurrentPosition(
+                                _geolocatorPlatform));
                           },
                           icon: const Icon(Icons.location_on),
                           label: const Text("Fetch current location"),
@@ -162,43 +164,5 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
         CameraPosition(target: latlng, zoom: 18),
       ),
     );
-  }
-
-  Future<LatLng> _getCurrentPosition() async {
-    final hasPermission = await _handlePermission();
-
-    if (!hasPermission) {
-      return const LatLng(25.178409020688036, 75.92163739945082);
-    }
-
-    final position = await _geolocatorPlatform.getCurrentPosition();
-    return LatLng(position.latitude, position.longitude);
-    // todo : implement hereforth
-    // return const LatLng(25.178409020688036, 75.92163739945082);
-  }
-
-  Future<bool> _handlePermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return false;
-    }
-
-    permission = await _geolocatorPlatform.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await _geolocatorPlatform.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return false;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return false;
-    }
-
-    return true;
   }
 }
