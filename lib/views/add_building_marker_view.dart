@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/google_maps/maps.dart';
+import 'package:protofood/modules/maps.dart';
 
 class AddBuildingMarkerView extends StatefulWidget {
   const AddBuildingMarkerView({Key? key}) : super(key: key);
