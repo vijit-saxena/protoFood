@@ -4,8 +4,9 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_user_datails.dart';
 import 'package:protofood/views/login_view.dart';
 import 'package:protofood/views/new_user_home_screen.dart';
+import 'package:protofood/views/payments_view.dart';
 
-import '../google_maps/add_building_marker_view.dart';
+import 'add_building_marker_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -55,6 +56,19 @@ class _HomeViewState extends State<HomeView> {
                     builder: (context) => const NewUserHomeScreen()));
               },
               child: const Text("4 - New User Home Screen"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentsView(
+                      amountInRs: 100,
+                      orderId: "coolId",
+                    ),
+                  ),
+                );
+              },
+              child: const Text("5 - Accept Payments"),
             ),
             TextButton(
               onPressed: () {

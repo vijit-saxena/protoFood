@@ -104,6 +104,39 @@ class DataplaneService {
     return LocationDataModel.fromJson(location);
   }
 
+  static Future<void> recordNewPayment(
+    String paymentId,
+    String amount,
+    String orderId,
+    String action,
+    String paymentDateTime,
+    String status,
+  ) async {
+    Map data = {
+      "paymentId": paymentId,
+      "amount": amount,
+      "orderId": orderId,
+      "action": action,
+      "paymentDateTime": paymentDateTime,
+      "status": status,
+    };
+
+    var body = jsonEncode(data);
+    var endpoint = Uri.parse(_getAddNewPaymentApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Add Location response status is : ${response.statusCode}");
+  }
+
+  static String _getAddNewPaymentApiEndpoint() {
+    return "$baseUrl/recordNewPayment";
+  }
+
   static String _getClosestUserLocationApiEndpoint(
       String latitude, String longitude, String userPhoneNumber) {
     // http://localhost:8080/protofood/v1/fetchUserClosestLocation?latitude=22&longitude=33&userPhoneNumber=+919799236336

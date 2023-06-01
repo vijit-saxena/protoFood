@@ -5,7 +5,7 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/google_maps/maps.dart';
+import 'package:protofood/modules/maps.dart';
 
 class NewUserHomeScreen extends StatefulWidget {
   const NewUserHomeScreen({super.key});
