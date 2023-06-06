@@ -1,10 +1,11 @@
 import "dart:convert";
 
-import "package:flutter/material.dart";
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
 import "package:protofood/data_models/location_data_model.dart";
+import "package:protofood/data_models/payment_data_model.dart";
 import "package:protofood/data_models/subscription_data_model.dart";
+import "package:protofood/data_models/taste_tiffin_data_model.dart";
 
 class DataplaneService {
   static Future<void> addNewUser(String firstName, String lastName,
@@ -104,24 +105,8 @@ class DataplaneService {
     return LocationDataModel.fromJson(location);
   }
 
-  static Future<void> recordNewPayment(
-    String paymentId,
-    String amount,
-    String orderId,
-    String action,
-    String paymentDateTime,
-    String status,
-  ) async {
-    Map data = {
-      "paymentId": paymentId,
-      "amount": amount,
-      "orderId": orderId,
-      "action": action,
-      "paymentDateTime": paymentDateTime,
-      "status": status,
-    };
-
-    var body = jsonEncode(data);
+  static Future<void> recordNewPayment(PaymentDataModel model) async {
+    var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddNewPaymentApiEndpoint());
 
     http.Response response = await http.post(
@@ -130,7 +115,25 @@ class DataplaneService {
       body: body,
     );
 
-    print("Add Location response status is : ${response.statusCode}");
+    print("Record Payment response status is : ${response.statusCode}");
+  }
+
+  static Future<void> addNewTasteTiffinRecord(
+      TasteTiffinDataModel tasteModel) async {
+    var body = json.encode(tasteModel.toJson());
+    var endpoint = Uri.parse(_getAddTasteTiffinRecordApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Added Taste Tiffin response status is : ${response.statusCode}");
+  }
+
+  static String _getAddTasteTiffinRecordApiEndpoint() {
+    return "$baseUrl/addTasteTiffinRecord";
   }
 
   static String _getAddNewPaymentApiEndpoint() {

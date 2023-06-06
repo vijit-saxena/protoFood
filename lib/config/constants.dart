@@ -1,30 +1,33 @@
-const String baseUrl = "http://192.168.42.184:8080/protofood/v1";
+// ignore_for_file: constant_identifier_names
+
+const String baseUrl = "http://192.168.5.184:8080/protofood/v1";
 const Map<String, String> baseHeaders = {"Content-Type": "application/json"};
 
 const String paymentKey = "rzp_test_eBwTFIyskpMbwk";
 
 enum PaymentStatus {
-  success,
-  failed,
-  refund,
+  Success,
+  Failed,
+  RefundPending,
+  Refunded,
 }
 
 enum Meal {
-  breakfastLunchDinner,
-  lunchDinner,
-  lunch,
-  dinner,
+  BreakfastLunchDinner,
+  LunchDinner,
+  Lunch,
+  Dinner,
 }
 
 enum Gender {
-  male,
-  female,
+  Male,
+  Female,
 }
 
 enum UserAction {
-  taste,
-  extraTiffin,
-  skipTiffin,
-  subscription,
-  subscriptionRefund,
+  Taste,
+  ExtraTiffin,
+  SkipTiffin,
+  Subscription,
+  SubscriptionRefund,
 }
