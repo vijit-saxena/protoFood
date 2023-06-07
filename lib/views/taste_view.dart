@@ -172,7 +172,7 @@ class _TasteViewState extends State<TasteView> {
                       quantity: _quantity.toString(),
                       paymentId: response.paymentId,
                       locationId: _finalLocationId,
-                      timeCreatedInEpochMilli: response.timeCreatedInEpochMilli,
+                      timeCreated: response.timeCreated,
                     );
 
                     await DataplaneService.addNewTasteTiffinRecord(tasteModel)

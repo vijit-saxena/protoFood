@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
-import 'package:protofood/data_models/user_data_model';
 import 'package:protofood/dataplane/dataplane_service.dart';
 
 // ignore: constant_identifier_names
