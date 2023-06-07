@@ -6,6 +6,7 @@ import "package:http/http.dart" as http;
 import "package:protofood/data_models/extra_tiffin_data_model.dart";
 import "package:protofood/data_models/location_data_model.dart";
 import "package:protofood/data_models/payment_data_model.dart";
+import "package:protofood/data_models/skip_tiffin_data_model.dart";
 import "package:protofood/data_models/subscription_data_model.dart";
 import "package:protofood/data_models/taste_tiffin_data_model.dart";
 import "package:protofood/data_models/tiffin_data_model.dart";
@@ -187,6 +188,23 @@ class DataplaneService {
     );
 
     print("Added Extra-Tiffin response status is : ${response.statusCode}");
+  }
+
+  static Future<void> addNewSkipTiffinRecord(SkipTiffinDataModel model) async {
+    var body = json.encode(model.toJson());
+    var endpoint = Uri.parse(_getAddSkipTiffinRecordApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Added Skip-Tiffin response status is : ${response.statusCode}");
+  }
+
+  static String _getAddSkipTiffinRecordApiEndpoint() {
+    return "$baseUrl/addSkipTiffinRecord";
   }
 
   static String _getAddExtraTiffinRecordApiEndpoint() {

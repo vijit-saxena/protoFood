@@ -5,6 +5,7 @@ import 'package:protofood/views/add_user_datails.dart';
 import 'package:protofood/views/extra_tiffin_view.dart';
 import 'package:protofood/views/login_view.dart';
 import 'package:protofood/views/new_user_home_screen.dart';
+import 'package:protofood/views/skip_tiffin_view.dart';
 import 'package:protofood/views/subscription_options_view.dart';
 import 'package:protofood/views/taste_view.dart';
 
@@ -92,6 +93,13 @@ class _HomeViewState extends State<HomeView> {
                     builder: (context) => const ExtraTiffinView()));
               },
               child: const Text("9 - Extra Tiffin"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SkipTiffinView()));
+              },
+              child: const Text("10 - Skip Tiffin"),
             ),
             TextButton(
               onPressed: () {
