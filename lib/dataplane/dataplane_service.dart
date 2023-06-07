@@ -1,12 +1,15 @@
 import "dart:convert";
 
+import "package:flutter/material.dart";
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
+import "package:protofood/data_models/extra_tiffin_data_model.dart";
 import "package:protofood/data_models/location_data_model.dart";
 import "package:protofood/data_models/payment_data_model.dart";
 import "package:protofood/data_models/subscription_data_model.dart";
 import "package:protofood/data_models/taste_tiffin_data_model.dart";
 import "package:protofood/data_models/tiffin_data_model.dart";
+import "package:protofood/data_models/user_data_model";
 
 class DataplaneService {
   static Future<void> addNewUser(String firstName, String lastName,
@@ -29,6 +32,32 @@ class DataplaneService {
     );
 
     print("Add User response status is : ${response.statusCode}");
+  }
+
+  static Future<String> getUserActiveTiffinId(String userPhoneNumber) async {
+    var endpoint =
+        Uri.parse(_getFetchUserActiveTiffinApiEndpoint(userPhoneNumber));
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+
+    print("User-Tiffin-Id response status is : ${response.statusCode}");
+    return response.body;
+  }
+
+  static Future<UserDataModel?> getUserWithPhoneNumber(
+      String userPhoneNumber) async {
+    var endpoint = Uri.parse(_getFetchUserApiEndpoint());
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+    print("Fetch User response body is : ${response.body}");
+
+    return UserDataModel.fromMap(json.decode(response.body));
   }
 
   static Future<void> addNewLocation(
@@ -146,6 +175,24 @@ class DataplaneService {
     print("Added Tiffin response status is : ${response.statusCode}");
   }
 
+  static Future<void> addNewExtraTiffinRecord(
+      ExtraTiffinDataModel model) async {
+    var body = json.encode(model.toJson());
+    var endpoint = Uri.parse(_getAddExtraTiffinRecordApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Added Extra-Tiffin response status is : ${response.statusCode}");
+  }
+
+  static String _getAddExtraTiffinRecordApiEndpoint() {
+    return "$baseUrl/addExtraTiffinRecord";
+  }
+
   static String _getAddTiffinRecordApiEndpoint() {
     return "$baseUrl/addTiffinRecord";
   }
@@ -178,5 +225,13 @@ class DataplaneService {
 
   static String _getAddUserApiEndpoint() {
     return "$baseUrl/user";
+  }
+
+  static String _getFetchUserApiEndpoint() {
+    return "$baseUrl/getUser";
+  }
+
+  static String _getFetchUserActiveTiffinApiEndpoint(String userPhoneNumber) {
+    return "$baseUrl/getUserActiveTiffin?userPhoneNumber=$userPhoneNumber";
   }
 }
