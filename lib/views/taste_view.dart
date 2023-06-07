@@ -30,7 +30,8 @@ class _TasteViewState extends State<TasteView> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
+    var now = DateTime.now();
+    _selectedDate = DateTime(now.year, now.month, now.day);
     _selectedMeal = meals[0];
     _quantity = 1;
     _loadLocalData();
