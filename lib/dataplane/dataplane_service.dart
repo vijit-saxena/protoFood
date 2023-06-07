@@ -6,6 +6,7 @@ import "package:protofood/data_models/location_data_model.dart";
 import "package:protofood/data_models/payment_data_model.dart";
 import "package:protofood/data_models/subscription_data_model.dart";
 import "package:protofood/data_models/taste_tiffin_data_model.dart";
+import "package:protofood/data_models/tiffin_data_model.dart";
 
 class DataplaneService {
   static Future<void> addNewUser(String firstName, String lastName,
@@ -130,6 +131,23 @@ class DataplaneService {
     );
 
     print("Added Taste Tiffin response status is : ${response.statusCode}");
+  }
+
+  static Future<void> createTiffinRecord(TiffinDataModel tiffinModel) async {
+    var body = json.encode(tiffinModel.toJson());
+    var endpoint = Uri.parse(_getAddTiffinRecordApiEndpoint());
+
+    http.Response response = await http.post(
+      endpoint,
+      headers: baseHeaders,
+      body: body,
+    );
+
+    print("Added Tiffin response status is : ${response.statusCode}");
+  }
+
+  static String _getAddTiffinRecordApiEndpoint() {
+    return "$baseUrl/addTiffinRecord";
   }
 
   static String _getAddTasteTiffinRecordApiEndpoint() {

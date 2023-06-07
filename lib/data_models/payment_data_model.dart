@@ -4,7 +4,7 @@ class PaymentDataModel {
   final String amountInRs;
   final String orderId;
   final String action;
-  final String timeCreatedInEpochMilli;
+  final String timeCreated;
   final String status;
 
   PaymentDataModel({
@@ -13,7 +13,7 @@ class PaymentDataModel {
     required this.amountInRs,
     required this.orderId,
     required this.action,
-    required this.timeCreatedInEpochMilli,
+    required this.timeCreated,
     required this.status,
   });
 
@@ -24,7 +24,7 @@ class PaymentDataModel {
       amountInRs: json['amountInRs'],
       orderId: json['orderId'],
       action: json['action'],
-      timeCreatedInEpochMilli: json['timeCreatedInEpochMilli'],
+      timeCreated: json['timeCreated'],
       status: json['status'],
     );
   }
@@ -36,7 +36,7 @@ class PaymentDataModel {
       'amountInRs': amountInRs,
       'orderId': orderId,
       'action': action,
-      'timeCreatedInEpochMilli': timeCreatedInEpochMilli,
+      'timeCreated': timeCreated,
       'status': status,
     };
   }

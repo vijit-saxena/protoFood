@@ -6,7 +6,7 @@ class TasteTiffinDataModel {
   final String quantity;
   final String paymentId;
   final String locationId;
-  final String timeCreatedInEpochMilli;
+  final String timeCreated;
 
   TasteTiffinDataModel({
     required this.orderId,
@@ -16,7 +16,7 @@ class TasteTiffinDataModel {
     required this.quantity,
     required this.paymentId,
     required this.locationId,
-    required this.timeCreatedInEpochMilli,
+    required this.timeCreated,
   });
 
   factory TasteTiffinDataModel.fromJson(Map<String, dynamic> json) {
@@ -28,7 +28,7 @@ class TasteTiffinDataModel {
       quantity: json["quantity"],
       paymentId: json["paymentId"],
       locationId: json["locationId"],
-      timeCreatedInEpochMilli: json["timeCreatedInEpochMilli"],
+      timeCreated: json["timeCreated"],
     );
   }
 
@@ -41,7 +41,7 @@ class TasteTiffinDataModel {
       "quantity": quantity,
       "paymentId": paymentId,
       "locationId": locationId,
-      "timeCreatedInEpochMilli": timeCreatedInEpochMilli,
+      "timeCreated": timeCreated,
     };
   }
 }

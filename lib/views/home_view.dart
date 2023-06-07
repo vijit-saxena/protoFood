@@ -4,6 +4,7 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_user_datails.dart';
 import 'package:protofood/views/login_view.dart';
 import 'package:protofood/views/new_user_home_screen.dart';
+import 'package:protofood/views/subscription_options_view.dart';
 import 'package:protofood/views/taste_view.dart';
 
 import 'add_building_marker_view.dart';
@@ -76,6 +77,13 @@ class _HomeViewState extends State<HomeView> {
                     MaterialPageRoute(builder: (context) => const TasteView()));
               },
               child: const Text("6 - Taste"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SubscriptionOptionsView()));
+              },
+              child: const Text("7 - Subscription Options"),
             ),
             TextButton(
               onPressed: () {
