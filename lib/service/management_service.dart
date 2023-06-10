@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protofood/auth/auth_service.dart';
+import 'package:protofood/data_models/consolidated_order_data_model.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/order_data_model.dart';
@@ -102,5 +103,10 @@ class ManagementService {
 
   Future<void> addNewOrderRecord(OrderDataModel orderModel) async {
     await _dataplaneService.addNewOrderRecord(orderModel);
+  }
+
+  Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
+      String userPhoneNumber, int pageNumber) async {
+    return _dataplaneService.getUserAllConsolidatedOrders(userPhoneNumber, pageNumber);
   }
 }

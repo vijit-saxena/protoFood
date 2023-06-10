@@ -28,7 +28,7 @@ enum UserAction {
   Taste,
   ExtraTiffin,
   SkipTiffin,
-  Subscription,
+  Tiffin,
   SubscriptionRefund,
 }
 
