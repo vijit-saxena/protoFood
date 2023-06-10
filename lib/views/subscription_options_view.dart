@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/subscription_summary_view.dart';
 
 class SubscriptionOptionsView extends StatefulWidget {
   const SubscriptionOptionsView({super.key});
 
   @override
-  State<SubscriptionOptionsView> createState() =>
-      _SubscriptionOptionsViewState();
+  State<SubscriptionOptionsView> createState() => _SubscriptionOptionsViewState();
 }
 
 class _SubscriptionOptionsViewState extends State<SubscriptionOptionsView> {
+  ManagementService managementService = ManagementService();
+
   List<SubscriptionDataModel> _activeSubscriptions = [];
 
   @override
@@ -27,7 +29,7 @@ class _SubscriptionOptionsViewState extends State<SubscriptionOptionsView> {
   }
 
   _loadActiveSubscriptionsData() async {
-    await DataplaneService.listActiveSubscriptions().then((response) {
+    await managementService.listActiveSubscriptions().then((response) {
       setState(() {
         _activeSubscriptions = response;
       });
@@ -42,10 +44,8 @@ class _SubscriptionOptionsViewState extends State<SubscriptionOptionsView> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(_activeSubscriptions[index].mealType.toString()),
-            subtitle: Text(
-                'Discount: ${_activeSubscriptions[index].discountInPercent}%'),
-            trailing: Text(
-                'Duration: ${_activeSubscriptions[index].durationInDays} Days'),
+            subtitle: Text('Discount: ${_activeSubscriptions[index].discountInPercent}%'),
+            trailing: Text('Duration: ${_activeSubscriptions[index].durationInDays} Days'),
             onTap: () {
               Navigator.push(
                 context,

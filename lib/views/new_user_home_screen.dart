@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/modules/maps.dart';
+import 'package:protofood/service/management_service.dart';
 
 class NewUserHomeScreen extends StatefulWidget {
   const NewUserHomeScreen({super.key});
@@ -15,23 +12,19 @@ class NewUserHomeScreen extends StatefulWidget {
 }
 
 class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
+  ManagementService managementService = ManagementService();
+
   ScrollController subscriptionListViewController = ScrollController();
   List<SubscriptionDataModel> activeSubscriptionList = [];
 
-  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  late String _userPhoneNumber;
   late LocationDataModel closestUserLocation;
 
   _loadPageData() async {
-    String? currentUserPhoneNumber =
-        AuthService.firebase().currentUser?.phoneNumber;
-    activeSubscriptionList = await DataplaneService.listActiveSubscriptions();
+    _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
+    activeSubscriptionList = await managementService.listActiveSubscriptions();
 
-    LatLng currentLocation = await Maps.getCurrentPosition(_geolocatorPlatform);
-    closestUserLocation = await DataplaneService.getUserClosestLocation(
-      currentLocation.latitude.toString(),
-      currentLocation.longitude.toString(),
-      currentUserPhoneNumber!,
-    );
+    closestUserLocation = await managementService.loadClosestUserCurrentLocation(_userPhoneNumber);
   }
 
   @override
@@ -51,8 +44,7 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
                 child: Column(
                   children: [
                     Text("Location : ${closestUserLocation.roomNumber}"),
-                    Text(
-                        "User : ${AuthService.firebase().currentUser?.phoneNumber}"),
+                    Text("User : ${AuthService.firebase().currentUser?.phoneNumber}"),
                     TextButton(
                       onPressed: () {},
                       child: const Text("TASTE"),

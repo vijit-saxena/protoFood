@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
-import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/skip_tiffin_data_model.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/views/payments_view.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:uuid/uuid.dart';
 
 class SkipTiffinView extends StatefulWidget {
@@ -15,12 +13,14 @@ class SkipTiffinView extends StatefulWidget {
 }
 
 class _SkipTiffinViewState extends State<SkipTiffinView> {
+  ManagementService managementService = ManagementService();
+
   late DateTime _selectedDate;
   late String _selectedMeal;
 
   late final String _userPhoneNumber;
   late final String _orderId;
-  late final String _tiffinId;
+  late final String? _tiffinId;
 
   final List<String> meals = [Meal.Lunch.name, Meal.Dinner.name];
 
@@ -56,7 +56,7 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
     _orderId = orderGenerator.v1();
 
-    _tiffinId = await DataplaneService.getUserActiveTiffinId(_userPhoneNumber);
+    _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
     print("TIFFIN : $_tiffinId");
   }
 
@@ -102,13 +102,14 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
                 SkipTiffinDataModel model = SkipTiffinDataModel(
                   skipId: _orderId,
                   userId: _userPhoneNumber,
-                  tiffinId: _tiffinId,
+                  tiffinId: _tiffinId!,
                   date: _selectedDate.toIso8601String(),
                   meal: _selectedMeal,
                   timeCreated: DateTime.now().toIso8601String(),
                 );
 
-                await DataplaneService.addNewSkipTiffinRecord(model)
+                await managementService
+                    .addNewSkipTiffinRecord(model)
                     .then((value) => Navigator.pop(context));
 
                 print('EXTRA : Order submitted!');

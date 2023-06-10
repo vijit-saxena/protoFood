@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:protofood/auth/auth_service.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/modules/maps.dart';
+import 'package:protofood/config/constants.dart';
+import 'package:protofood/data_models/location_data_model.dart';
+import 'package:protofood/service/management_service.dart';
+import 'package:protofood/service/maps.dart';
 
 class AddBuildingMarkerView extends StatefulWidget {
   const AddBuildingMarkerView({Key? key}) : super(key: key);
@@ -14,6 +15,11 @@ class AddBuildingMarkerView extends StatefulWidget {
 }
 
 class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
+  ManagementService managementService = ManagementService();
+
+  late String? _userPhoneNumber;
+  late String _locationId;
+
   late GoogleMapController mapController;
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
   TextEditingController roomNumberController = TextEditingController();
@@ -24,8 +30,11 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   LatLng _draggedLocation = const LatLng(25.178409020688036, 75.92163739945082);
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+
+    _userPhoneNumber = managementService.fetchUserPhoneNumber();
+    _locationId = managementService.generateUUID(UuidTag.Location.name);
   }
 
   @override
@@ -42,7 +51,7 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: Maps.getCurrentPosition(_geolocatorPlatform),
+        future: managementService.getUserCurrentLocationLatLng(_userPhoneNumber!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -72,8 +81,8 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
                         alignment: Alignment.bottomCenter,
                         child: ElevatedButton.icon(
                           onPressed: () async {
-                            _gotoSpecficLocation(await Maps.getCurrentPosition(
-                                _geolocatorPlatform));
+                            _gotoSpecficLocation(
+                                await Maps.getCurrentPosition(_geolocatorPlatform));
                           },
                           icon: const Icon(Icons.location_on),
                           label: const Text("Fetch current location"),
@@ -117,19 +126,19 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            String? currentUserPhoneNumber =
-                                AuthService.firebase().currentUser?.phoneNumber;
-                            print(
-                                "Location to add : ${snapshot.requireData.toJson()}");
-                            await DataplaneService.addNewLocation(
-                                    buildingNameController.text,
-                                    roomNumberController.text,
-                                    _draggedLocation.latitude.toString(),
-                                    _draggedLocation.longitude.toString(),
-                                    landmarkController.text,
-                                    shortNameController.text,
-                                    currentUserPhoneNumber!)
-                                .then((value) {
+                            print("Location to add : ${snapshot.requireData.toJson()}");
+
+                            LocationDataModel locationModel = LocationDataModel(
+                                locationId: _locationId,
+                                buildingName: buildingNameController.text,
+                                roomNumber: roomNumberController.text,
+                                latitude: _draggedLocation.latitude.toString(),
+                                longitude: _draggedLocation.longitude.toString(),
+                                landmark: landmarkController.text,
+                                shortName: shortNameController.text,
+                                userId: _userPhoneNumber!);
+
+                            await managementService.addNewLocation(locationModel).then((_) {
                               Navigator.of(context).pop();
                             });
                           },

@@ -4,6 +4,7 @@ import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,13 +16,15 @@ class ExtraTiffinView extends StatefulWidget {
 }
 
 class _ExtraTiffinViewState extends State<ExtraTiffinView> {
+  ManagementService managementService = ManagementService();
+
   late DateTime _selectedDate;
   late String _selectedMeal;
   late int _quantity;
 
   late final String _userPhoneNumber;
   late final String _orderId;
-  late final String _tiffinId;
+  late final String? _tiffinId;
 
   final List<String> meals = [Meal.Lunch.name, Meal.Dinner.name];
 
@@ -58,7 +61,7 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
     _orderId = orderGenerator.v1();
 
-    _tiffinId = await DataplaneService.getUserActiveTiffinId(_userPhoneNumber);
+    _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
     print("TIFFIN : $_tiffinId");
   }
 
@@ -152,15 +155,16 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                     ExtraTiffinDataModel model = ExtraTiffinDataModel(
                         extraId: _orderId,
                         userId: _userPhoneNumber,
-                        tiffinId: _tiffinId,
+                        tiffinId: _tiffinId!,
                         date: _selectedDate.toIso8601String(),
                         meal: _selectedMeal,
                         quantity: _quantity,
                         paymentId: response.paymentId,
                         timeCreated: response.timeCreated);
 
-                    await DataplaneService.addNewExtraTiffinRecord(model)
-                        .then((value) => Navigator.pop(context));
+                    await managementService
+                        .addNewExtraTiffinRecord(model)
+                        .then((_) => Navigator.pop(context));
                   } else {
                     // In case payment fails
                     /*

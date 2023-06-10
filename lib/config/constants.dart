@@ -31,3 +31,19 @@ enum UserAction {
   Subscription,
   SubscriptionRefund,
 }
+
+enum UuidTag {
+  User,
+  Location,
+  Taste,
+  Tiffin,
+  ExtraTiffin,
+  SkipTiffin,
+  Subscription,
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+  }
+}
