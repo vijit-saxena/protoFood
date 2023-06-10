@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
+import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/management_service.dart';
@@ -162,9 +163,16 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                         paymentId: response.paymentId,
                         timeCreated: response.timeCreated);
 
-                    await managementService
-                        .addNewExtraTiffinRecord(model)
-                        .then((_) => Navigator.pop(context));
+                    await managementService.addNewExtraTiffinRecord(model).then((_) async {
+                      OrderDataModel orderModel = OrderDataModel(
+                          orderId: _orderId,
+                          userPhoneNumber: _userPhoneNumber,
+                          timeCreated: response.timeCreated);
+
+                      await managementService
+                          .addNewOrderRecord(orderModel)
+                          .then((_) => Navigator.of(context).pop());
+                    });
                   } else {
                     // In case payment fails
                     /*

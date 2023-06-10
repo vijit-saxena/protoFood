@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
+import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/taste_tiffin_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
@@ -171,9 +172,16 @@ class _TasteViewState extends State<TasteView> {
                       timeCreated: response.timeCreated,
                     );
 
-                    await managementService
-                        .addNewTasteTiffinRecord(tasteModel)
-                        .then((_) => Navigator.pop(context));
+                    await managementService.addNewTasteTiffinRecord(tasteModel).then((_) async {
+                      OrderDataModel orderModel = OrderDataModel(
+                          orderId: _orderId,
+                          userPhoneNumber: _userPhoneNumber,
+                          timeCreated: response.timeCreated);
+
+                      await managementService
+                          .addNewOrderRecord(orderModel)
+                          .then((_) => Navigator.of(context).pop());
+                    });
                   } else {
                     // In case payment fails
                     /*

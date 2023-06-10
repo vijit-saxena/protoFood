@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
+import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
@@ -106,6 +107,15 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                       ),
                     ),
                   );
+
+                  OrderDataModel orderModel = OrderDataModel(
+                      orderId: _orderId,
+                      userPhoneNumber: _userPhoneNumber,
+                      timeCreated: response.timeCreated);
+
+                  await managementService
+                      .addNewOrderRecord(orderModel)
+                      .then((_) => Navigator.of(context).pop());
 
                   print("SUBSCRIPTION : ${response.toJson()}");
 

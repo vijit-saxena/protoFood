@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/location_data_model.dart';
+import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/skip_tiffin_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
@@ -97,5 +98,9 @@ class ManagementService {
 
   Future<void> recordNewPayment(PaymentDataModel paymentModel) async {
     await _dataplaneService.recordNewPayment(paymentModel);
+  }
+
+  Future<void> addNewOrderRecord(OrderDataModel orderModel) async {
+    await _dataplaneService.addNewOrderRecord(orderModel);
   }
 }
