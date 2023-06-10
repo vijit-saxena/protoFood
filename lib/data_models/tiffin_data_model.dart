@@ -1,5 +1,5 @@
 class TiffinDataModel {
-  final String orderId;
+  final String tiffinId;
   final String userId;
   final String startDate;
   final String endDate;
@@ -13,7 +13,7 @@ class TiffinDataModel {
   final List<String> skips;
 
   TiffinDataModel({
-    required this.orderId,
+    required this.tiffinId,
     required this.userId,
     required this.startDate,
     required this.endDate,
@@ -29,7 +29,7 @@ class TiffinDataModel {
 
   factory TiffinDataModel.fromJson(Map<String, dynamic> json) {
     return TiffinDataModel(
-      orderId: json["orderId"],
+      tiffinId: json["tiffinId"],
       userId: json["userId"],
       startDate: json["startDate"],
       endDate: json["endDate"],
@@ -39,14 +39,14 @@ class TiffinDataModel {
       paymentId: json["paymentId"],
       timeCreated: json["timeCreated"],
       timeUpdated: json["timeUpdated"],
-      extras: json["extras"],
-      skips: json["skips"],
+      extras: List<String>.from(json["extras"]),
+      skips: List<String>.from(json["skips"]),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "orderId": orderId,
+      "tiffinId": tiffinId,
       "userId": userId,
       "startDate": startDate,
       "endDate": endDate,

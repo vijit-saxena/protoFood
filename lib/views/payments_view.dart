@@ -3,6 +3,7 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentsView extends StatefulWidget {
@@ -22,6 +23,8 @@ class PaymentsView extends StatefulWidget {
 }
 
 class _PaymentsViewState extends State<PaymentsView> {
+  ManagementService managementService = ManagementService();
+
   late Razorpay _razorpay;
   late String _userPhoneNumber;
   late String _userEmailId;
@@ -58,7 +61,7 @@ class _PaymentsViewState extends State<PaymentsView> {
       status: PaymentStatus.Success.name,
     );
 
-    await DataplaneService.recordNewPayment(paymentDataModel).then((value) {
+    await managementService.recordNewPayment(paymentDataModel).then((_) {
       Navigator.pop(context, paymentDataModel);
     });
   }
@@ -76,7 +79,7 @@ class _PaymentsViewState extends State<PaymentsView> {
       status: PaymentStatus.Failed.name,
     );
 
-    await DataplaneService.recordNewPayment(paymentDataModel).then((value) {
+    await managementService.recordNewPayment(paymentDataModel).then((_) {
       Navigator.pop(context, paymentDataModel);
     });
   }

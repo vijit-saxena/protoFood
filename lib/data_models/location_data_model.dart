@@ -31,4 +31,17 @@ class LocationDataModel {
       userId: json["userId"],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "locationId": locationId,
+      "buildingName": buildingName,
+      "roomNumber": roomNumber,
+      "latitude": latitude,
+      "longitude": longitude,
+      "landmark": landmark,
+      "shortName": shortName,
+      "userId": userId,
+    };
+  }
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/modules/maps.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,11 +17,12 @@ class SubscriptionSummaryView extends StatefulWidget {
   });
 
   @override
-  State<SubscriptionSummaryView> createState() =>
-      _SubscriptionSummaryViewState();
+  State<SubscriptionSummaryView> createState() => _SubscriptionSummaryViewState();
 }
 
 class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
+  ManagementService managementService = ManagementService();
+
   late DateTime _selectedDate;
   late final String _userPhoneNumber;
   late final String _orderId;
@@ -55,17 +54,11 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
     /*
     userId, locationId, orderId, 
     */
-    Uuid orderGenerator = const Uuid();
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
-    _orderId = orderGenerator.v1();
 
-    GeolocatorPlatform geolocatorPlatform = GeolocatorPlatform.instance;
-    var currentLocation = await Maps.getCurrentPosition(geolocatorPlatform);
-    await DataplaneService.getUserClosestLocation(
-            currentLocation.latitude.toString(),
-            currentLocation.longitude.toString(),
-            _userPhoneNumber)
-        .then((location) {
+    _orderId = managementService.generateUUID(UuidTag.Tiffin.name);
+
+    await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
       _finalLocationId = location.locationId;
     });
   }
@@ -87,11 +80,9 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
             const SizedBox(height: 16.0),
             Text('Duration: ${widget.subscriptionData.durationInDays} days'),
             const SizedBox(height: 16.0),
-            Text(
-                'Start Date & Time: ${widget.subscriptionData.startDateTime.toString()}'),
+            Text('Start Date & Time: ${widget.subscriptionData.startDateTime.toString()}'),
             const SizedBox(height: 16.0),
-            Text(
-                'End Date & Time: ${widget.subscriptionData.endDateTime.toString()}'),
+            Text('End Date & Time: ${widget.subscriptionData.endDateTime.toString()}'),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () => _selectDate(context),
@@ -124,13 +115,12 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                   */
 
                   TiffinDataModel tiffinDataModel = TiffinDataModel(
-                      orderId: _orderId,
+                      tiffinId: _orderId,
                       userId: _userPhoneNumber,
                       startDate: _selectedDate.toIso8601String(),
                       endDate: _selectedDate
                           .add(
-                            Duration(
-                                days: widget.subscriptionData.durationInDays),
+                            Duration(days: widget.subscriptionData.durationInDays),
                           )
                           .toIso8601String(),
                       subscriptionId: widget.subscriptionData.subscriptionId,
@@ -144,7 +134,7 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
 
                   print("DEBUG : ${tiffinDataModel.toJson()}");
 
-                  await DataplaneService.createTiffinRecord(tiffinDataModel);
+                  await managementService.createTiffinRecord(tiffinDataModel);
                   print("Added Tiffin : $_orderId");
                 },
                 child: const Text("Proceed to payment"),

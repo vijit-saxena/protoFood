@@ -5,9 +5,8 @@ import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/taste_tiffin_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
-import 'package:protofood/modules/maps.dart';
+import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
-import 'package:uuid/uuid.dart';
 
 class TasteView extends StatefulWidget {
   const TasteView({super.key});
@@ -17,6 +16,8 @@ class TasteView extends StatefulWidget {
 }
 
 class _TasteViewState extends State<TasteView> {
+  ManagementService managementService = ManagementService();
+
   late DateTime _selectedDate;
   late String _selectedMeal;
   late int _quantity;
@@ -56,17 +57,11 @@ class _TasteViewState extends State<TasteView> {
     /*
     userId, locationId, orderId, 
     */
-    Uuid orderGenerator = const Uuid();
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
-    _orderId = orderGenerator.v1();
 
-    GeolocatorPlatform geolocatorPlatform = GeolocatorPlatform.instance;
-    var currentLocation = await Maps.getCurrentPosition(geolocatorPlatform);
-    await DataplaneService.getUserClosestLocation(
-            currentLocation.latitude.toString(),
-            currentLocation.longitude.toString(),
-            _userPhoneNumber)
-        .then((location) {
+    _orderId = managementService.generateUUID(UuidTag.Taste.name);
+
+    await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
       _finalLocationId = location.locationId;
     });
   }
@@ -176,8 +171,9 @@ class _TasteViewState extends State<TasteView> {
                       timeCreated: response.timeCreated,
                     );
 
-                    await DataplaneService.addNewTasteTiffinRecord(tasteModel)
-                        .then((value) => Navigator.pop(context));
+                    await managementService
+                        .addNewTasteTiffinRecord(tasteModel)
+                        .then((_) => Navigator.pop(context));
                   } else {
                     // In case payment fails
                     /*

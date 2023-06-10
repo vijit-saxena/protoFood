@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/data_models/user_data_model.dart';
+import 'package:protofood/service/management_service.dart';
 
 // ignore: constant_identifier_names
 enum Gender { Male, Female }
@@ -13,6 +14,8 @@ class AddUserDetailsView extends StatefulWidget {
 }
 
 class _AddUserDetailsViewState extends State<AddUserDetailsView> {
+  ManagementService managementService = ManagementService();
+
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -78,15 +81,15 @@ class _AddUserDetailsViewState extends State<AddUserDetailsView> {
           ElevatedButton(
             onPressed: () async {
               String? contact = AuthService.firebase().currentUser?.phoneNumber;
-              print(
-                  "User data to submit : ${_firstNameController.text}, ${_lastNameController.text}, ${_gender!.name}, $contact, ${_emailController.text}");
-              await DataplaneService.addNewUser(
-                      _firstNameController.text,
-                      _lastNameController.text,
-                      _gender!.name,
-                      contact!,
-                      _emailController.text)
-                  .then((value) {
+              UserDataModel userModel = UserDataModel(
+                firstName: _firstNameController.text,
+                lastName: _lastNameController.text,
+                gender: _gender!.name,
+                contact: contact!,
+                email: _emailController.text,
+              );
+              print("User data to add : ${userModel.toString()}");
+              await managementService.addNewUser(userModel).then((_) {
                 Navigator.pop(context);
               });
             },

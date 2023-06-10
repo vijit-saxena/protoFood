@@ -2,8 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Maps {
-  static Future<LatLng> getCurrentPosition(
-      GeolocatorPlatform geolocatorPlatform) async {
+  static Future<LatLng> getCurrentPosition(GeolocatorPlatform geolocatorPlatform) async {
     final hasPermission = await handlePermission(geolocatorPlatform);
 
     if (!hasPermission) {
@@ -16,8 +15,7 @@ class Maps {
     // return const LatLng(25.178409020688036, 75.92163739945082);
   }
 
-  static Future<bool> handlePermission(
-      GeolocatorPlatform geolocatorPlatform) async {
+  static Future<bool> handlePermission(GeolocatorPlatform geolocatorPlatform) async {
     bool serviceEnabled;
     LocationPermission permission;
 
