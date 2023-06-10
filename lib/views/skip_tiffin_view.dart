@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
+import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/skip_tiffin_data_model.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:uuid/uuid.dart';
@@ -99,18 +100,26 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
+                String currentTime = DateTime.now().toIso8601String();
                 SkipTiffinDataModel model = SkipTiffinDataModel(
                   skipId: _orderId,
                   userId: _userPhoneNumber,
                   tiffinId: _tiffinId!,
                   date: _selectedDate.toIso8601String(),
                   meal: _selectedMeal,
-                  timeCreated: DateTime.now().toIso8601String(),
+                  timeCreated: currentTime,
                 );
 
-                await managementService
-                    .addNewSkipTiffinRecord(model)
-                    .then((value) => Navigator.pop(context));
+                await managementService.addNewSkipTiffinRecord(model).then((_) async {
+                  OrderDataModel orderModel = OrderDataModel(
+                      orderId: _orderId,
+                      userPhoneNumber: _userPhoneNumber,
+                      timeCreated: currentTime);
+
+                  await managementService
+                      .addNewOrderRecord(orderModel)
+                      .then((_) => Navigator.of(context).pop());
+                });
 
                 print('EXTRA : Order submitted!');
               },
