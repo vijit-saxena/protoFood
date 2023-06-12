@@ -1,11 +1,11 @@
 class SubscriptionDataModel {
   final String subscriptionId;
   final double discountInPercent;
-  final DateTime startDateTime;
-  final DateTime endDateTime;
+  final String startDateTime;
+  final String endDateTime;
   final int durationInDays;
-  final DateTime timeCreated;
-  final DateTime timeUpdated;
+  final String timeCreated;
+  final String timeUpdated;
   final String mealType;
 
   SubscriptionDataModel({
@@ -23,11 +23,11 @@ class SubscriptionDataModel {
     return SubscriptionDataModel(
       subscriptionId: json['subscriptionId'],
       discountInPercent: json['discountInPercent'],
-      startDateTime: DateTime.parse(json['startDateTime']),
-      endDateTime: DateTime.parse(json['endDateTime']),
+      startDateTime: json['startDateTime'],
+      endDateTime: json['endDateTime'],
       durationInDays: json['durationInDays'],
-      timeCreated: DateTime.parse(json['timeCreated']),
-      timeUpdated: DateTime.parse(json['timeUpdated']),
+      timeCreated: json['timeCreated'],
+      timeUpdated: json['timeUpdated'],
       mealType: json['mealType'],
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
-import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/subscription_summary_view.dart';
 
