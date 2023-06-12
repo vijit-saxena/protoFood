@@ -103,7 +103,7 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                       builder: (context) => PaymentsView(
                         amountInRs: 3000,
                         orderId: _orderId,
-                        action: UserAction.Subscription,
+                        action: UserAction.Tiffin,
                       ),
                     ),
                   );

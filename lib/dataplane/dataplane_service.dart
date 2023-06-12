@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
+import "package:protofood/data_models/consolidated_order_data_model.dart";
 import "package:protofood/data_models/extra_tiffin_data_model.dart";
 import "package:protofood/data_models/location_data_model.dart";
 import "package:protofood/data_models/order_data_model.dart";
@@ -195,6 +196,43 @@ class DataplaneService {
     );
 
     print("Added order details to Order collection : ${model.orderId}");
+  }
+
+  Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
+      String userPhoneNumber, int pageNumber) async {
+    List<ConsolidatedOrder> listConsolidatedOrder = [];
+    var endpoint = Uri.parse(_getUserConsolidatedOrders(userPhoneNumber, pageNumber));
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+
+    var jsonResponse = json.decode(response.body);
+    for (var json in jsonResponse) {
+      ConsolidatedOrder consolidatedOrder = ConsolidatedOrder.fromJson(json);
+      if (json['taste'] != null) {
+        consolidatedOrder.setTaste(json['skip']);
+      } else if (json['tiffin'] != null) {
+        consolidatedOrder.setTiffin(json['tiffin']);
+      } else if (json['extra'] != null) {
+        consolidatedOrder.setExtra(json['extra']);
+      } else if (json['skip'] != null) {
+        consolidatedOrder.setSkip(json['skip']);
+      }
+
+      if (json['payment'] != null) {
+        consolidatedOrder.setPayment(json['payment']);
+      }
+
+      listConsolidatedOrder.add(consolidatedOrder);
+    }
+
+    return listConsolidatedOrder;
+  }
+
+  String _getUserConsolidatedOrders(String userPhoneNumber, int pageNumber) {
+    return "$baseUrl/getUserAllOrders/$userPhoneNumber?pageNumber=$pageNumber";
   }
 
   String _getAddNewOrderRecordApiEndpoint() {
