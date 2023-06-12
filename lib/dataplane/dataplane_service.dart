@@ -1,4 +1,5 @@
 import "dart:convert";
+import "dart:ffi";
 
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
@@ -64,8 +65,27 @@ class DataplaneService {
     print("Add Location response status is : ${response.statusCode}");
   }
 
-  // todo : This should actually be listAllActiveSubscriptions, so only subscriptions
-  // falling b/w current date are displayed.
+  Future<List<LocationDataModel>> getUserAllLocations(String userPhoneNumber) async {
+    var endpoint = Uri.parse(_getUserAllLocationsApiEndpoint(userPhoneNumber));
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+
+    print("JSON DATA : ${response.body}");
+
+    List<dynamic> jsonList = json.decode(response.body);
+
+    List<LocationDataModel> userAllLocations = [];
+
+    for (var json in jsonList) {
+      userAllLocations.add(LocationDataModel.fromJson(json));
+    }
+
+    return userAllLocations;
+  }
+
   Future<void> listAllSubscriptions() async {
     var endpoint = Uri.parse(_getListAllSubscriptionsApiEndpoint());
 
@@ -78,11 +98,14 @@ class DataplaneService {
 
   Future<List<SubscriptionDataModel>> listActiveSubscriptions() async {
     var endpoint = Uri.parse(_getListActiveSubscriptionsApiEndpoint());
+    print("Endpoint : $endpoint");
 
     http.Response response = await http.get(
       endpoint,
       headers: baseHeaders,
     );
+
+    print("response.body is : ${response.body}");
 
     List<dynamic> jsonList = jsonDecode(response.body);
     List<SubscriptionDataModel> subscriptions = [];
@@ -229,6 +252,10 @@ class DataplaneService {
     }
 
     return listConsolidatedOrder;
+  }
+
+  String _getUserAllLocationsApiEndpoint(String userPhoneNumber) {
+    return "$baseUrl/fetchUserAllLocations/$userPhoneNumber";
   }
 
   String _getUserConsolidatedOrders(String userPhoneNumber, int pageNumber) {

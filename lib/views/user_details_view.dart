@@ -1,36 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/config/constants.dart';
+import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/user_data_model.dart';
+import 'package:protofood/service/management_service.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  UserDataModel userInfo;
+  final UserDataModel userInfo;
 
-  UserDetailsScreen({super.key, required this.userInfo});
+  const UserDetailsScreen({Key? key, required this.userInfo}) : super(key: key);
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
+  final ManagementService managementService = ManagementService();
+  late List<LocationDataModel> _allUserLocations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // _loadData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _loadData() async {
+    _allUserLocations = await managementService.getUserAllLocations(widget.userInfo.contact);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Details'),
+        title: const Text('User Details'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 40,
               // backgroundImage: AssetImage('assets/profile_picture.jpg'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Text(
               "${widget.userInfo.firstName.capitalize()} ${widget.userInfo.lastName.capitalize()}",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -70,11 +90,35 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               ),
             ),
             const SizedBox(height: 8.0),
-            Text(
-              '123 Main Street, City',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+            FutureBuilder(
+              future: _loadData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: _allUserLocations.length,
+                      itemBuilder: (context, index) {
+                        LocationDataModel location = _allUserLocations[index];
+                        return Card(
+                          child: ListTile(
+                            title: Text(location.shortName),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('${location.roomNumber}, ${location.buildingName}'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ],
         ),

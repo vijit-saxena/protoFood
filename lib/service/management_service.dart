@@ -60,6 +60,12 @@ class ManagementService {
     await _dataplaneService.addNewLocation(locationModel);
   }
 
+  Future<List<LocationDataModel>> getUserAllLocations(String userPhoneNumber) async {
+    List<LocationDataModel> userAllLocations =
+        await _dataplaneService.getUserAllLocations(userPhoneNumber);
+    return userAllLocations;
+  }
+
   Future<void> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
     await _dataplaneService.addNewTasteTiffinRecord(tasteModel);
   }
