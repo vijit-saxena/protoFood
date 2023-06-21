@@ -4,6 +4,7 @@ import "dart:ffi";
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
 import "package:protofood/data_models/consolidated_order_data_model.dart";
+import "package:protofood/data_models/daily_tiffin_model.dart";
 import "package:protofood/data_models/extra_tiffin_data_model.dart";
 import "package:protofood/data_models/location_data_model.dart";
 import "package:protofood/data_models/order_data_model.dart";
@@ -252,6 +253,28 @@ class DataplaneService {
     }
 
     return listConsolidatedOrder;
+  }
+
+  Future<List<DailyTiffinModel>> generateDailyTiffinData(String date, String meal) async {
+    var endpoint = Uri.parse(_getGenerateDailyTiffinDataApiEndpoint(date, meal));
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+
+    List<dynamic> jsonList = json.decode(response.body);
+    List<DailyTiffinModel> dailyTiffinModelList = [];
+
+    for (var json in jsonList) {
+      dailyTiffinModelList.add(DailyTiffinModel.fromJson(json));
+    }
+
+    return dailyTiffinModelList;
+  }
+
+  String _getGenerateDailyTiffinDataApiEndpoint(String date, String meal) {
+    return "$baseUrl/generateDailyTiffinReport?date=$date&meal=$meal";
   }
 
   String _getUserAllLocationsApiEndpoint(String userPhoneNumber) {

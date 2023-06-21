@@ -19,7 +19,6 @@ class SubscriberHomeScreenView extends StatefulWidget {
 
 class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
   ManagementService managementService = ManagementService();
-  Calculator calculator = Calculator();
 
   late final String _userPhoneNumber;
   late final UserDataModel? _userInfo;
@@ -133,15 +132,15 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                         Transform.scale(
                           scale: 5,
                           child: CircularProgressIndicator(
-                            value: calculator.getActiveTiffinDaysRemaining(_userTiffinInfo) /
-                                calculator.getActiveTiffinTotalDays(_userTiffinInfo),
+                            value: Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo) /
+                                Calculator.getActiveTiffinTotalDays(_userTiffinInfo),
                             backgroundColor: Colors.grey[300],
                             valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                             strokeWidth: 5,
                           ),
                         ),
                         Text(
-                          "${calculator.getActiveTiffinDaysRemaining(_userTiffinInfo).toString()} Days", // Replace with your dynamic value
+                          "${Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo).toString()} Days", // Replace with your dynamic value
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ],

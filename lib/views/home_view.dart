@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_building_marker_view.dart';
 import 'package:protofood/views/add_user_datails.dart';
+import 'package:protofood/views/daily_tiffin_list_view.dart';
 import 'package:protofood/views/extra_tiffin_view.dart';
 import 'package:protofood/views/login_view.dart';
 import 'package:protofood/views/new_user_home_screen.dart';
@@ -106,6 +107,13 @@ class _HomeViewState extends State<HomeView> {
                     .push(MaterialPageRoute(builder: (context) => const SkipTiffinView()));
               },
               child: const Text("10 - Skip Tiffin"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => const DailyTiffinListView()));
+              },
+              child: const Text("11 - Daily Tiffin Report List"),
             ),
             TextButton(
               onPressed: () {
