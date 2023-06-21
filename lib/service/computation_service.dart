@@ -1,7 +1,8 @@
+import 'package:intl/intl.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
 
 class Calculator {
-  int getActiveTiffinDaysRemaining(TiffinDataModel tiffinModel) {
+  static int getActiveTiffinDaysRemaining(TiffinDataModel tiffinModel) {
     var endDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.endDate));
 
     var currentDate = parseDateTimeWithoutCurrentTime(DateTime.now());
@@ -9,16 +10,20 @@ class Calculator {
     return endDate.difference(currentDate).inDays;
   }
 
-  int getActiveTiffinTotalDays(TiffinDataModel tiffinModel) {
+  static int getActiveTiffinTotalDays(TiffinDataModel tiffinModel) {
     var startDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.startDate));
     var endDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.endDate));
 
     return endDate.difference(startDate).inDays;
   }
 
-  DateTime parseDateTimeWithoutCurrentTime(DateTime datetime) {
+  static DateTime parseDateTimeWithoutCurrentTime(DateTime datetime) {
     DateTime formattedDateTime = DateTime(datetime.year, datetime.month, datetime.day);
 
     return formattedDateTime;
+  }
+
+  static String parseDateTimeToDateString(DateTime datetime) {
+    return DateFormat("yyyy-MM-dd").format(datetime);
   }
 }

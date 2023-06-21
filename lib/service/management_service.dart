@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/data_models/consolidated_order_data_model.dart';
+import 'package:protofood/data_models/daily_tiffin_model.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/order_data_model.dart';
@@ -112,7 +113,16 @@ class ManagementService {
   }
 
   Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
-      String userPhoneNumber, int pageNumber) async {
+    String userPhoneNumber,
+    int pageNumber,
+  ) async {
     return _dataplaneService.getUserAllConsolidatedOrders(userPhoneNumber, pageNumber);
+  }
+
+  Future<List<DailyTiffinModel>> generateDailyTiffinData(
+    String date,
+    String meal,
+  ) async {
+    return _dataplaneService.generateDailyTiffinData(date, meal);
   }
 }
