@@ -7,6 +7,7 @@ import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/extra_tiffin_view.dart';
 import 'package:protofood/views/skip_tiffin_view.dart';
+import 'package:protofood/views/subscription_options_view.dart';
 import 'package:protofood/views/user_details_view.dart';
 import 'package:protofood/views/view_transaction_history.dart';
 
@@ -22,7 +23,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
 
   late final String _userPhoneNumber;
   late final UserDataModel? _userInfo;
-  late final TiffinDataModel _userTiffinInfo;
+  late final TiffinDataModel? _userTiffinInfo;
   late final LocationDataModel _userCurrentLocation;
 
   @override
@@ -49,7 +50,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
       _userCurrentLocation =
           await managementService.loadClosestUserCurrentLocation(_userPhoneNumber);
 
-      _userTiffinInfo = await managementService.getUserTiffinInfo(_userPhoneNumber);
+      _userTiffinInfo = await managementService.getUserActiveTiffinInfo(_userPhoneNumber);
     } catch (e) {
       print(e.toString());
     }
@@ -132,19 +133,35 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                         Transform.scale(
                           scale: 5,
                           child: CircularProgressIndicator(
-                            value: Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo) /
-                                Calculator.getActiveTiffinTotalDays(_userTiffinInfo),
+                            value: Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo!) /
+                                Calculator.getActiveTiffinTotalDays(_userTiffinInfo!),
                             backgroundColor: Colors.grey[300],
                             valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                             strokeWidth: 5,
                           ),
                         ),
                         Text(
-                          "${Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo).toString()} Days", // Replace with your dynamic value
+                          "${Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo!).toString()} Days", // Replace with your dynamic value
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SubscriptionOptionsView(
+                            initialDate: _userTiffinInfo!.endDate.add(
+                              const Duration(days: 1),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text("Renew membership!"),
                   ),
                 ),
                 const SizedBox(height: 20),

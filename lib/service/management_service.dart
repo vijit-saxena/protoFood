@@ -66,7 +66,8 @@ class ManagementService {
   }
 
   Future<TiffinDataModel?> getUserActiveTiffinInfo(String userPhoneNumber) async {
-    TiffinDataModel? tiffinInfo = await _dataplaneService.getUserActiveTiffin(userPhoneNumber);
+    TiffinDataModel? tiffinInfo =
+        await _dataplaneService.getUserActiveTiffin(userPhoneNumber, DateTime.now().toString());
 
     return tiffinInfo;
   }

@@ -29,9 +29,8 @@ class DataplaneService {
     print("Add User response status is : ${response.statusCode}");
   }
 
-  Future<TiffinDataModel?> getUserActiveTiffin(String userPhoneNumber) async {
-    var endpoint =
-        Uri.parse(_getFetchUserActiveTiffinApiEndpoint(userPhoneNumber, DateTime.now().toString()));
+  Future<TiffinDataModel?> getUserActiveTiffin(String userPhoneNumber, String dateTime) async {
+    var endpoint = Uri.parse(_getFetchUserActiveTiffinApiEndpoint(userPhoneNumber, dateTime));
 
     http.Response response = await http.get(
       endpoint,
