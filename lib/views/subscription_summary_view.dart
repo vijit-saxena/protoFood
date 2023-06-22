@@ -111,17 +111,6 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                     ),
                   );
 
-                  OrderDataModel orderModel = OrderDataModel(
-                      orderId: _orderId,
-                      userPhoneNumber: _userPhoneNumber,
-                      timeCreated: response.timeCreated);
-
-                  await managementService
-                      .addNewOrderRecord(orderModel)
-                      .then((_) => Navigator.of(context).pop());
-
-                  print("SUBSCRIPTION : ${response.toJson()}");
-
                   /*
                   1. Save payments info
                   2. Save tiffins info
@@ -143,10 +132,16 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                       extras: List.empty(),
                       skips: List.empty());
 
-                  print("DEBUG : ${tiffinDataModel.toJson()}");
+                  await managementService.createTiffinRecord(tiffinDataModel).then((_) async {
+                    OrderDataModel orderModel = OrderDataModel(
+                        orderId: _orderId,
+                        userPhoneNumber: _userPhoneNumber,
+                        timeCreated: response.timeCreated);
 
-                  await managementService.createTiffinRecord(tiffinDataModel);
-                  print("Added Tiffin : $_orderId");
+                    await managementService
+                        .addNewOrderRecord(orderModel)
+                        .then((_) => Navigator.of(context).pop());
+                  });
                 },
                 child: const Text("Proceed to payment"),
               ),

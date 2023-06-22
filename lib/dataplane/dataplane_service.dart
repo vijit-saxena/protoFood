@@ -40,6 +40,17 @@ class DataplaneService {
     return TiffinDataModel.fromJson(json.decode(response.body));
   }
 
+  Future<TiffinDataModel?> getUserFutureTiffin(String userPhoneNumber, String dateTime) async {
+    var endpoint = Uri.parse(_getFetchUserFutureTiffinApiEndpoint(userPhoneNumber, dateTime));
+
+    http.Response response = await http.get(
+      endpoint,
+      headers: baseHeaders,
+    );
+
+    return TiffinDataModel.fromJson(json.decode(response.body));
+  }
+
   Future<UserDataModel?> getUserWithPhoneNumber(String userPhoneNumber) async {
     var endpoint = Uri.parse(_getFetchUserApiEndpoint(userPhoneNumber));
 
@@ -340,5 +351,9 @@ class DataplaneService {
 
   String _getFetchUserActiveTiffinApiEndpoint(String userPhoneNumber, String dateTime) {
     return "$baseUrl/getUserActiveTiffin?userPhoneNumber=$userPhoneNumber&dateTime=$dateTime";
+  }
+
+  String _getFetchUserFutureTiffinApiEndpoint(String userPhoneNumber, String dateTime) {
+    return "$baseUrl/getUserFutureTiffin?userPhoneNumber=$userPhoneNumber&dateTime=$dateTime";
   }
 }

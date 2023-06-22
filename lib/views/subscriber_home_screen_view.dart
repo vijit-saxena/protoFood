@@ -26,6 +26,8 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
   late final TiffinDataModel? _userTiffinInfo;
   late final LocationDataModel _userCurrentLocation;
 
+  bool _showSubscriptionRenewalBanner = false;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +56,19 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> _checkSubscriptionRenewalBanner() async {
+    TiffinDataModel? futureUserTiffin =
+        await managementService.getUserFutureTiffinInfo(_userPhoneNumber);
+
+    if (futureUserTiffin == null) {
+      _showSubscriptionRenewalBanner = true;
+    } else {
+      _showSubscriptionRenewalBanner = false;
+    }
+
+    await Future.delayed(const Duration(seconds: 5));
   }
 
   @override
@@ -148,21 +163,32 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                     ),
                   ),
                 ),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SubscriptionOptionsView(
-                            initialDate: _userTiffinInfo!.endDate.add(
-                              const Duration(days: 1),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text("Renew membership!"),
-                  ),
+                FutureBuilder(
+                  future: _checkSubscriptionRenewalBanner(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return _showSubscriptionRenewalBanner
+                          ? Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => SubscriptionOptionsView(
+                                        initialDate: _userTiffinInfo!.endDate.add(
+                                          const Duration(days: 1),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("Renew membership!"),
+                              ),
+                            )
+                          : const SizedBox.shrink();
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
                 ),
                 const SizedBox(height: 20),
                 Row(
