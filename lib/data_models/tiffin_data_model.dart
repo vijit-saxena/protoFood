@@ -1,14 +1,14 @@
 class TiffinDataModel {
   final String tiffinId;
   final String userId;
-  final String startDate;
-  final String endDate;
+  final DateTime startDate;
+  final DateTime endDate;
   final String subscriptionId;
   final String locationId;
   final String meal;
   final String paymentId;
-  final String timeCreated;
-  final String timeUpdated;
+  final DateTime timeCreated;
+  final DateTime timeUpdated;
   final List<String> extras;
   final List<String> skips;
 
@@ -31,14 +31,14 @@ class TiffinDataModel {
     return TiffinDataModel(
       tiffinId: json["tiffinId"],
       userId: json["userId"],
-      startDate: json["startDate"],
-      endDate: json["endDate"],
+      startDate: DateTime.parse(json["startDate"]),
+      endDate: DateTime.parse(json["endDate"]),
       subscriptionId: json["subscriptionId"],
       locationId: json["locationId"],
       meal: json["meal"],
       paymentId: json["paymentId"],
-      timeCreated: json["timeCreated"],
-      timeUpdated: json["timeUpdated"],
+      timeCreated: DateTime.parse(json["timeCreated"]),
+      timeUpdated: DateTime.parse(json["timeUpdated"]),
       extras: List<String>.from(json["extras"]),
       skips: List<String>.from(json["skips"]),
     );
@@ -48,14 +48,14 @@ class TiffinDataModel {
     return {
       "tiffinId": tiffinId,
       "userId": userId,
-      "startDate": startDate,
-      "endDate": endDate,
+      "startDate": startDate.toString(),
+      "endDate": endDate.toString(),
       "subscriptionId": subscriptionId,
       "locationId": locationId,
       "meal": meal,
       "paymentId": paymentId,
-      "timeCreated": timeCreated,
-      "timeUpdated": timeUpdated,
+      "timeCreated": timeCreated.toString(),
+      "timeUpdated": timeUpdated.toString(),
       "extras": extras,
       "skips": skips
     };

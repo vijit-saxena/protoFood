@@ -164,7 +164,7 @@ class _TasteViewState extends State<TasteView> {
                     TasteTiffinDataModel tasteModel = TasteTiffinDataModel(
                       orderId: _orderId,
                       userId: _userPhoneNumber,
-                      date: _selectedDate.toString(),
+                      date: _selectedDate,
                       meal: _selectedMeal,
                       quantity: _quantity.toString(),
                       paymentId: response.paymentId,

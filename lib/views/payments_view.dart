@@ -57,7 +57,7 @@ class _PaymentsViewState extends State<PaymentsView> {
       amountInRs: widget.amountInRs.toString(),
       orderId: widget.orderId,
       action: widget.action.name,
-      timeCreated: DateTime.now().toIso8601String(),
+      timeCreated: DateTime.now(),
       status: PaymentStatus.Success.name,
     );
 
@@ -75,7 +75,7 @@ class _PaymentsViewState extends State<PaymentsView> {
       amountInRs: widget.amountInRs.toString(),
       orderId: widget.orderId,
       action: widget.action.name,
-      timeCreated: DateTime.now().toIso8601String(),
+      timeCreated: DateTime.now(),
       status: PaymentStatus.Failed.name,
     );
 

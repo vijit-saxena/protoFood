@@ -157,7 +157,7 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                         extraId: _orderId,
                         userId: _userPhoneNumber,
                         tiffinId: _tiffinId!,
-                        date: _selectedDate.toIso8601String(),
+                        date: _selectedDate,
                         meal: _selectedMeal,
                         quantity: _quantity,
                         paymentId: response.paymentId,

@@ -3,7 +3,7 @@ import 'package:protofood/data_models/tiffin_data_model.dart';
 
 class Calculator {
   static int getActiveTiffinDaysRemaining(TiffinDataModel tiffinModel) {
-    var endDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.endDate));
+    var endDate = parseDateTimeWithoutCurrentTime(tiffinModel.endDate);
 
     var currentDate = parseDateTimeWithoutCurrentTime(DateTime.now());
 
@@ -11,8 +11,8 @@ class Calculator {
   }
 
   static int getActiveTiffinTotalDays(TiffinDataModel tiffinModel) {
-    var startDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.startDate));
-    var endDate = parseDateTimeWithoutCurrentTime(DateTime.parse(tiffinModel.endDate));
+    var startDate = parseDateTimeWithoutCurrentTime(tiffinModel.startDate);
+    var endDate = parseDateTimeWithoutCurrentTime(tiffinModel.endDate);
 
     return endDate.difference(startDate).inDays;
   }

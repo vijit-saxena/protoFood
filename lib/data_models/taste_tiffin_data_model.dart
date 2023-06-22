@@ -1,12 +1,12 @@
 class TasteTiffinDataModel {
   final String orderId;
   final String userId;
-  final String date;
+  final DateTime date;
   final String meal;
   final String quantity;
   final String paymentId;
   final String locationId;
-  final String timeCreated;
+  final DateTime timeCreated;
 
   TasteTiffinDataModel({
     required this.orderId,
@@ -23,12 +23,12 @@ class TasteTiffinDataModel {
     return TasteTiffinDataModel(
       orderId: json["orderId"],
       userId: json["userId"],
-      date: json["date"],
+      date: DateTime.parse(json["date"]),
       meal: json["meal"],
       quantity: json["quantity"],
       paymentId: json["paymentId"],
       locationId: json["locationId"],
-      timeCreated: json["timeCreated"],
+      timeCreated: DateTime.parse(json["timeCreated"]),
     );
   }
 
@@ -36,12 +36,12 @@ class TasteTiffinDataModel {
     return {
       "orderId": orderId,
       "userId": userId,
-      "date": date,
+      "date": date.toString(),
       "meal": meal,
       "quantity": quantity,
       "paymentId": paymentId,
       "locationId": locationId,
-      "timeCreated": timeCreated,
+      "timeCreated": timeCreated.toString(),
     };
   }
 }

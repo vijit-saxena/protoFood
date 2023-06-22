@@ -83,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
             TextButton(
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => const SubscriptionOptionsView()));
+                    .push(MaterialPageRoute(builder: (context) => SubscriptionOptionsView()));
               },
               child: const Text("7 - Subscription Options"),
             ),
