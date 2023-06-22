@@ -3,7 +3,7 @@ class TasteTiffinDataModel {
   final String userId;
   final DateTime date;
   final String meal;
-  final String quantity;
+  final int quantity;
   final String paymentId;
   final String locationId;
   final DateTime timeCreated;

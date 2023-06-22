@@ -165,7 +165,7 @@ class _TasteViewState extends State<TasteView> {
                       userId: _userPhoneNumber,
                       date: _selectedDate,
                       meal: _selectedMeal,
-                      quantity: _quantity.toString(),
+                      quantity: _quantity,
                       paymentId: response.paymentId,
                       locationId: _finalLocationId,
                       timeCreated: response.timeCreated,
