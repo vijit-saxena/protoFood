@@ -3,6 +3,7 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/skip_tiffin_data_model.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -52,9 +53,8 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
     /*
     userId, locationId, orderId, 
     */
-    Uuid orderGenerator = const Uuid();
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
-    _orderId = orderGenerator.v1();
+    _orderId = Calculator.generateUUID(UuidTag.SkipTiffin);
 
     _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
     print("TIFFIN : $_tiffinId");

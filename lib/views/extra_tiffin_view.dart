@@ -5,6 +5,7 @@ import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
 import 'package:uuid/uuid.dart';
@@ -57,9 +58,8 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
     /*
     userId, locationId, orderId, 
     */
-    Uuid orderGenerator = const Uuid();
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
-    _orderId = orderGenerator.v1();
+    _orderId = Calculator.generateUUID(UuidTag.ExtraTiffin);
 
     _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
     print("TIFFIN : $_tiffinId");

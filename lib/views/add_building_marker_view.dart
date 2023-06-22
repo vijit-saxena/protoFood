@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/location_data_model.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/service/maps.dart';
 
@@ -34,7 +35,7 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
     super.initState();
 
     _userPhoneNumber = managementService.fetchUserPhoneNumber();
-    _locationId = managementService.generateUUID(UuidTag.Location.name);
+    _locationId = Calculator.generateUUID(UuidTag.Location);
   }
 
   @override

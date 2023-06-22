@@ -19,12 +19,6 @@ import 'package:uuid/uuid.dart';
 class ManagementService {
   final DataplaneService _dataplaneService = DataplaneService();
 
-  String generateUUID(String actionItem) {
-    Uuid generator = const Uuid();
-
-    return "$actionItem-${generator.v1()}";
-  }
-
   String? fetchUserPhoneNumber() {
     String? phoneNumber = AuthService.firebase().currentUser!.phoneNumber;
 
