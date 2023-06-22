@@ -31,7 +31,7 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   LatLng _draggedLocation = const LatLng(25.178409020688036, 75.92163739945082);
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
 
     _userPhoneNumber = managementService.fetchUserPhoneNumber();

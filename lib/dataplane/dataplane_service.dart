@@ -29,16 +29,16 @@ class DataplaneService {
     print("Add User response status is : ${response.statusCode}");
   }
 
-  Future<String> getUserActiveTiffinId(String userPhoneNumber) async {
-    var endpoint = Uri.parse(_getFetchUserActiveTiffinApiEndpoint(userPhoneNumber));
+  Future<TiffinDataModel?> getUserActiveTiffin(String userPhoneNumber) async {
+    var endpoint =
+        Uri.parse(_getFetchUserActiveTiffinApiEndpoint(userPhoneNumber, DateTime.now().toString()));
 
     http.Response response = await http.get(
       endpoint,
       headers: baseHeaders,
     );
 
-    print("User-Tiffin-Id response status is : ${response.statusCode}");
-    return response.body;
+    return TiffinDataModel.fromJson(json.decode(response.body));
   }
 
   Future<UserDataModel?> getUserWithPhoneNumber(String userPhoneNumber) async {
@@ -211,7 +211,7 @@ class DataplaneService {
 
   Future<void> addNewOrderRecord(OrderDataModel model) async {
     var body = json.encode(model.toJson());
-    var endpoint = Uri.parse(_getAddSkipTiffinRecordApiEndpoint());
+    var endpoint = Uri.parse(_getAddNewOrderRecordApiEndpoint());
 
     http.Response response = await http.post(
       endpoint,
@@ -339,7 +339,7 @@ class DataplaneService {
     return "$baseUrl/getUser?userPhoneNumber=$userPhoneNumber";
   }
 
-  String _getFetchUserActiveTiffinApiEndpoint(String userPhoneNumber) {
-    return "$baseUrl/getUserActiveTiffin?userPhoneNumber=$userPhoneNumber";
+  String _getFetchUserActiveTiffinApiEndpoint(String userPhoneNumber, String dateTime) {
+    return "$baseUrl/getUserActiveTiffin?userPhoneNumber=$userPhoneNumber&dateTime=$dateTime";
   }
 }

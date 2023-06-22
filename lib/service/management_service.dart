@@ -65,18 +65,16 @@ class ManagementService {
     await _dataplaneService.addNewTasteTiffinRecord(tasteModel);
   }
 
-  Future<String?> getUserActiveTiffinId(String userPhoneNumber) async {
-    String? tiffinId = await _dataplaneService.getUserActiveTiffinId(userPhoneNumber);
-
-    return tiffinId;
-  }
-
-  Future<TiffinDataModel> getUserTiffinInfo(String userPhoneNumber) async {
-    String? tiffinId = await getUserActiveTiffinId(userPhoneNumber);
-
-    TiffinDataModel? tiffinInfo = await _dataplaneService.getTiffinInfo(tiffinId!);
+  Future<TiffinDataModel?> getUserActiveTiffinInfo(String userPhoneNumber) async {
+    TiffinDataModel? tiffinInfo = await _dataplaneService.getUserActiveTiffin(userPhoneNumber);
 
     return tiffinInfo;
+  }
+
+  Future<String?> getUserActiveTiffinId(String userPhoneNumber) async {
+    TiffinDataModel? tiffinModel = await getUserActiveTiffinInfo(userPhoneNumber);
+
+    return tiffinModel?.tiffinId;
   }
 
   Future<void> createTiffinRecord(TiffinDataModel tiffinModel) async {
