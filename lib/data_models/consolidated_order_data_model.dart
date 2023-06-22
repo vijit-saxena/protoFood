@@ -7,7 +7,7 @@ import 'package:protofood/data_models/tiffin_data_model.dart';
 class ConsolidatedOrder {
   final String orderId;
   final String action;
-  final String timeCreated;
+  final DateTime timeCreated;
 
   TasteTiffinDataModel? taste = null;
   TiffinDataModel? tiffin = null;
@@ -50,7 +50,7 @@ class ConsolidatedOrder {
       // extra: ExtraTiffinDataModel.fromJson(json["extra"]),
       // skip: SkipTiffinDataModel.fromJson(json["skip"]),
       // payment: PaymentDataModel.fromJson(json["payment"]),
-      timeCreated: json["timeCreated"],
+      timeCreated: DateTime.parse(json["timeCreated"]),
     );
   }
 }

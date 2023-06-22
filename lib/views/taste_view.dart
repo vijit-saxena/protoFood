@@ -32,8 +32,7 @@ class _TasteViewState extends State<TasteView> {
   @override
   void initState() {
     super.initState();
-    var now = DateTime.now();
-    _selectedDate = DateTime(now.year, now.month, now.day);
+    _selectedDate = DateTime.now();
     _selectedMeal = meals[0];
     _quantity = 1;
     _loadLocalData();
@@ -164,9 +163,9 @@ class _TasteViewState extends State<TasteView> {
                     TasteTiffinDataModel tasteModel = TasteTiffinDataModel(
                       orderId: _orderId,
                       userId: _userPhoneNumber,
-                      date: _selectedDate.toString(),
+                      date: _selectedDate,
                       meal: _selectedMeal,
-                      quantity: _quantity.toString(),
+                      quantity: _quantity,
                       paymentId: response.paymentId,
                       locationId: _finalLocationId,
                       timeCreated: response.timeCreated,

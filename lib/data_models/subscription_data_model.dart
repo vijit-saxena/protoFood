@@ -1,11 +1,13 @@
+import 'package:protofood/config/constants.dart';
+
 class SubscriptionDataModel {
   final String subscriptionId;
   final double discountInPercent;
-  final String startDateTime;
-  final String endDateTime;
+  final DateTime startDateTime;
+  final DateTime endDateTime;
   final int durationInDays;
-  final String timeCreated;
-  final String timeUpdated;
+  final DateTime timeCreated;
+  final DateTime timeUpdated;
   final String mealType;
 
   SubscriptionDataModel({
@@ -23,11 +25,11 @@ class SubscriptionDataModel {
     return SubscriptionDataModel(
       subscriptionId: json['subscriptionId'],
       discountInPercent: json['discountInPercent'],
-      startDateTime: json['startDateTime'],
-      endDateTime: json['endDateTime'],
+      startDateTime: DateTime.parse(json['startDateTime']),
+      endDateTime: DateTime.parse(json['endDateTime']),
       durationInDays: json['durationInDays'],
-      timeCreated: json['timeCreated'],
-      timeUpdated: json['timeUpdated'],
+      timeCreated: DateTime.parse(json['timeCreated']),
+      timeUpdated: DateTime.parse(json['timeUpdated']),
       mealType: json['mealType'],
     );
   }

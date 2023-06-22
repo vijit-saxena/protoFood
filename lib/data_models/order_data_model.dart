@@ -1,7 +1,7 @@
 class OrderDataModel {
   final String orderId;
   final String userPhoneNumber;
-  final String timeCreated;
+  final DateTime timeCreated;
 
   OrderDataModel({
     required this.orderId,
@@ -13,7 +13,7 @@ class OrderDataModel {
     return OrderDataModel(
       orderId: json["orderId"],
       userPhoneNumber: json["userPhoneNumber"],
-      timeCreated: json["timeCreated"],
+      timeCreated: DateTime.parse(json["timeCreated"]),
     );
   }
 
@@ -21,7 +21,7 @@ class OrderDataModel {
     return {
       "orderId": orderId,
       "userPhoneNumber": userPhoneNumber,
-      "timeCreated": timeCreated,
+      "timeCreated": timeCreated.toString(),
     };
   }
 }

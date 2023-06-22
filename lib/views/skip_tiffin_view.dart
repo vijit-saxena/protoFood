@@ -43,8 +43,7 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
   @override
   void initState() {
     super.initState();
-    var now = DateTime.now();
-    _selectedDate = DateTime(now.year, now.month, now.day);
+    _selectedDate = DateTime.now();
     _selectedMeal = meals[0];
     _loadLocalData();
   }
@@ -100,12 +99,12 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                String currentTime = DateTime.now().toIso8601String();
+                DateTime currentTime = DateTime.now();
                 SkipTiffinDataModel model = SkipTiffinDataModel(
                   skipId: _orderId,
                   userId: _userPhoneNumber,
                   tiffinId: _tiffinId!,
-                  date: _selectedDate.toIso8601String(),
+                  date: _selectedDate,
                   meal: _selectedMeal,
                   timeCreated: currentTime,
                 );

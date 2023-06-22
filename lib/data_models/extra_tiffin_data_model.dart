@@ -2,11 +2,11 @@ class ExtraTiffinDataModel {
   final String extraId;
   final String userId;
   final String tiffinId;
-  final String date;
+  final DateTime date;
   final String meal;
   final int quantity;
   final String paymentId;
-  final String timeCreated;
+  final DateTime timeCreated;
 
   ExtraTiffinDataModel({
     required this.extraId,
@@ -24,11 +24,11 @@ class ExtraTiffinDataModel {
         extraId: json["extraId"],
         userId: json["userId"],
         tiffinId: json["tiffinId"],
-        date: json["date"],
+        date: DateTime.parse(json["date"]),
         meal: json["meal"],
         quantity: json["quantity"],
         paymentId: json["paymentId"],
-        timeCreated: json["timeCreated"]);
+        timeCreated: DateTime.parse(json["timeCreated"]));
   }
 
   Map<String, dynamic> toJson() {
@@ -36,11 +36,11 @@ class ExtraTiffinDataModel {
       "extraId": extraId,
       "userId": userId,
       "tiffinId": tiffinId,
-      "date": date,
+      "date": date.toString(),
       "meal": meal,
       "quantity": quantity,
       "paymentId": paymentId,
-      "timeCreated": timeCreated,
+      "timeCreated": timeCreated.toString(),
     };
   }
 }

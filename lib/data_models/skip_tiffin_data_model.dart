@@ -2,9 +2,9 @@ class SkipTiffinDataModel {
   final String skipId;
   final String userId;
   final String tiffinId;
-  final String date;
+  final DateTime date;
   final String meal;
-  final String timeCreated;
+  final DateTime timeCreated;
 
   SkipTiffinDataModel({
     required this.skipId,
@@ -20,9 +20,9 @@ class SkipTiffinDataModel {
         skipId: json["skipId"],
         userId: json["userId"],
         tiffinId: json["tiffinId"],
-        date: json["date"],
+        date: DateTime.parse(json["date"]),
         meal: json["meal"],
-        timeCreated: json["timeCreated"]);
+        timeCreated: DateTime.parse(json["timeCreated"]));
   }
 
   Map<String, dynamic> toJson() {
@@ -30,9 +30,9 @@ class SkipTiffinDataModel {
       "skipId": skipId,
       "userId": userId,
       "tiffinId": tiffinId,
-      "date": date,
+      "date": date.toString(),
       "meal": meal,
-      "timeCreated": timeCreated,
+      "timeCreated": timeCreated.toString(),
     };
   }
 }

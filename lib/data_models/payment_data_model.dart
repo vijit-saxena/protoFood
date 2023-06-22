@@ -4,7 +4,7 @@ class PaymentDataModel {
   final String amountInRs;
   final String orderId;
   final String action;
-  final String timeCreated;
+  final DateTime timeCreated;
   final String status;
 
   PaymentDataModel({
@@ -24,7 +24,7 @@ class PaymentDataModel {
       amountInRs: json['amountInRs'],
       orderId: json['orderId'],
       action: json['action'],
-      timeCreated: json['timeCreated'],
+      timeCreated: DateTime.parse(json['timeCreated']),
       status: json['status'],
     );
   }
@@ -36,7 +36,7 @@ class PaymentDataModel {
       'amountInRs': amountInRs,
       'orderId': orderId,
       'action': action,
-      'timeCreated': timeCreated,
+      'timeCreated': timeCreated.toString(),
       'status': status,
     };
   }
