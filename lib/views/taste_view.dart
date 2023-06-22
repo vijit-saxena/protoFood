@@ -6,6 +6,7 @@ import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/taste_tiffin_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
 
@@ -59,7 +60,7 @@ class _TasteViewState extends State<TasteView> {
     */
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
 
-    _orderId = managementService.generateUUID(UuidTag.Taste.name);
+    _orderId = Calculator.generateUUID(UuidTag.Taste);
 
     await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
       _finalLocationId = location.locationId;

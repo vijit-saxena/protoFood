@@ -5,17 +5,19 @@ import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/payments_view.dart';
-import 'package:uuid/uuid.dart';
 
 class SubscriptionSummaryView extends StatefulWidget {
   final SubscriptionDataModel subscriptionData;
+  DateTime? initialDate;
 
-  const SubscriptionSummaryView({
-    super.key,
+  SubscriptionSummaryView({
+    Key? key,
     required this.subscriptionData,
-  });
+    this.initialDate,
+  }) : super(key: key);
 
   @override
   State<SubscriptionSummaryView> createState() => _SubscriptionSummaryViewState();
@@ -29,12 +31,20 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
   late final String _orderId;
   late final String _finalLocationId;
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = widget.initialDate ?? DateTime.now();
+    _loadLocalData();
+  }
+
   Future<void> _selectDate(BuildContext context) async {
+    DateTime firstDate = widget.initialDate ?? DateTime.now();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: DateTime.daysPerWeek)),
+      firstDate: firstDate,
+      lastDate: firstDate.add(const Duration(days: 2 * DateTime.daysPerWeek)),
     );
 
     if (pickedDate != null && pickedDate != _selectedDate) {
@@ -44,20 +54,13 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedDate = DateTime.now();
-    _loadLocalData();
-  }
-
   _loadLocalData() async {
     /*
     userId, locationId, orderId, 
     */
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
 
-    _orderId = managementService.generateUUID(UuidTag.Tiffin.name);
+    _orderId = Calculator.generateUUID(UuidTag.Tiffin);
 
     await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
       _finalLocationId = location.locationId;
@@ -108,17 +111,6 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                     ),
                   );
 
-                  OrderDataModel orderModel = OrderDataModel(
-                      orderId: _orderId,
-                      userPhoneNumber: _userPhoneNumber,
-                      timeCreated: response.timeCreated);
-
-                  await managementService
-                      .addNewOrderRecord(orderModel)
-                      .then((_) => Navigator.of(context).pop());
-
-                  print("SUBSCRIPTION : ${response.toJson()}");
-
                   /*
                   1. Save payments info
                   2. Save tiffins info
@@ -127,12 +119,10 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                   TiffinDataModel tiffinDataModel = TiffinDataModel(
                       tiffinId: _orderId,
                       userId: _userPhoneNumber,
-                      startDate: _selectedDate.toIso8601String(),
-                      endDate: _selectedDate
-                          .add(
-                            Duration(days: widget.subscriptionData.durationInDays),
-                          )
-                          .toIso8601String(),
+                      startDate: _selectedDate,
+                      endDate: _selectedDate.add(
+                        Duration(days: widget.subscriptionData.durationInDays),
+                      ),
                       subscriptionId: widget.subscriptionData.subscriptionId,
                       locationId: _finalLocationId,
                       meal: widget.subscriptionData.mealType,
@@ -142,10 +132,16 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                       extras: List.empty(),
                       skips: List.empty());
 
-                  print("DEBUG : ${tiffinDataModel.toJson()}");
+                  await managementService.createTiffinRecord(tiffinDataModel).then((_) async {
+                    OrderDataModel orderModel = OrderDataModel(
+                        orderId: _orderId,
+                        userPhoneNumber: _userPhoneNumber,
+                        timeCreated: response.timeCreated);
 
-                  await managementService.createTiffinRecord(tiffinDataModel);
-                  print("Added Tiffin : $_orderId");
+                    await managementService
+                        .addNewOrderRecord(orderModel)
+                        .then((_) => Navigator.of(context).pop());
+                  });
                 },
                 child: const Text("Proceed to payment"),
               ),

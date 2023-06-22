@@ -19,12 +19,6 @@ import 'package:uuid/uuid.dart';
 class ManagementService {
   final DataplaneService _dataplaneService = DataplaneService();
 
-  String generateUUID(String actionItem) {
-    Uuid generator = const Uuid();
-
-    return "$actionItem-${generator.v1()}";
-  }
-
   String? fetchUserPhoneNumber() {
     String? phoneNumber = AuthService.firebase().currentUser!.phoneNumber;
 
@@ -71,18 +65,28 @@ class ManagementService {
     await _dataplaneService.addNewTasteTiffinRecord(tasteModel);
   }
 
-  Future<String?> getUserActiveTiffinId(String userPhoneNumber) async {
-    String? tiffinId = await _dataplaneService.getUserActiveTiffinId(userPhoneNumber);
-
-    return tiffinId;
-  }
-
-  Future<TiffinDataModel> getUserTiffinInfo(String userPhoneNumber) async {
-    String? tiffinId = await getUserActiveTiffinId(userPhoneNumber);
-
-    TiffinDataModel? tiffinInfo = await _dataplaneService.getTiffinInfo(tiffinId!);
+  Future<TiffinDataModel?> getUserActiveTiffinInfo(String userPhoneNumber) async {
+    TiffinDataModel? tiffinInfo = await _dataplaneService.getUserActiveTiffin(
+      userPhoneNumber,
+      DateTime.now().toString(),
+    );
 
     return tiffinInfo;
+  }
+
+  Future<TiffinDataModel?> getUserFutureTiffinInfo(String userPhoneNumber) async {
+    TiffinDataModel? futureTiffinInfo = await _dataplaneService.getUserFutureTiffin(
+      userPhoneNumber,
+      DateTime.now().toString(),
+    );
+
+    return futureTiffinInfo;
+  }
+
+  Future<String?> getUserActiveTiffinId(String userPhoneNumber) async {
+    TiffinDataModel? tiffinModel = await getUserActiveTiffinInfo(userPhoneNumber);
+
+    return tiffinModel?.tiffinId;
   }
 
   Future<void> createTiffinRecord(TiffinDataModel tiffinModel) async {

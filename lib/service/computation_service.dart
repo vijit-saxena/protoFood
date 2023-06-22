@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
+import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
+import 'package:uuid/uuid.dart';
 
 class Calculator {
   static int getActiveTiffinDaysRemaining(TiffinDataModel tiffinModel) {
@@ -25,5 +27,11 @@ class Calculator {
 
   static String parseDateTimeToDateString(DateTime datetime) {
     return DateFormat("yyyy-MM-dd").format(datetime);
+  }
+
+  static String generateUUID(UuidTag actionTag) {
+    Uuid generator = const Uuid();
+
+    return "ocid.${actionTag.name}..${generator.v1()}";
   }
 }
