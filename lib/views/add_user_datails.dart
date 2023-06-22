@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
+import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/user_data_model.dart';
+import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 
 // ignore: constant_identifier_names
@@ -80,8 +82,10 @@ class _AddUserDetailsViewState extends State<AddUserDetailsView> {
           ),
           ElevatedButton(
             onPressed: () async {
+              String userId = Calculator.generateUUID(UuidTag.User);
               String? contact = AuthService.firebase().currentUser?.phoneNumber;
               UserDataModel userModel = UserDataModel(
+                userId: userId,
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
                 gender: _gender!.name,
