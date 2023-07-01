@@ -63,7 +63,7 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
     _orderId = Calculator.generateUUID(UuidTag.Tiffin);
 
     await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
-      _finalLocationId = location.locationId;
+      _finalLocationId = location!.locationId;
     });
   }
 
@@ -132,15 +132,21 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                       extras: List.empty(),
                       skips: List.empty());
 
-                  await managementService.createTiffinRecord(tiffinDataModel).then((_) async {
-                    OrderDataModel orderModel = OrderDataModel(
-                        orderId: _orderId,
-                        userPhoneNumber: _userPhoneNumber,
-                        timeCreated: response.timeCreated);
+                  await managementService
+                      .createTiffinRecord(tiffinDataModel)
+                      .then((isSuccess) async {
+                    if (isSuccess) {
+                      OrderDataModel orderModel = OrderDataModel(
+                          orderId: _orderId,
+                          userPhoneNumber: _userPhoneNumber,
+                          timeCreated: response.timeCreated);
 
-                    await managementService
-                        .addNewOrderRecord(orderModel)
-                        .then((_) => Navigator.of(context).pop());
+                      await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
+                        if (isSuccess) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    }
                   });
                 },
                 child: const Text("Proceed to payment"),

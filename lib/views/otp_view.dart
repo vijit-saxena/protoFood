@@ -66,22 +66,18 @@ class _OTPScreenViewState extends State<OTPScreenView> {
             listenForMultipleSmsOnAndroid: true,
             defaultPinTheme: defaultPinTheme,
             onClipboardFound: (value) {
-              debugPrint('onClipboardFound: $value');
               pinController.setText(value);
             },
             hapticFeedbackType: HapticFeedbackType.lightImpact,
             onCompleted: (pin) async {
               try {
-                debugPrint('onCompleteds: $pin');
                 await AuthService.firebase()
                     .logIn(
                         phoneAuthCredential: PhoneAuthProvider.credential(
                             verificationId: _verificationCode, smsCode: pin))
                     .then((value) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeView()),
-                      (route) => false);
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (context) => const HomeView()), (route) => false);
                 });
               } catch (e) {
                 FocusScope.of(context).unfocus();
@@ -124,18 +120,12 @@ class _OTPScreenViewState extends State<OTPScreenView> {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: "+91${widget.phone}",
       verificationCompleted: (PhoneAuthCredential cred) async {
-        await AuthService.firebase()
-            .logIn(phoneAuthCredential: cred)
-            .then((value) {
+        await AuthService.firebase().logIn(phoneAuthCredential: cred).then((value) {
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeView()),
-              (route) => false);
+              context, MaterialPageRoute(builder: (context) => const HomeView()), (route) => false);
         });
       },
-      verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-      },
+      verificationFailed: (FirebaseAuthException e) {},
       codeSent: (String verificationCode, int? resendToken) {
         setState(() {
           _verificationCode = verificationCode;

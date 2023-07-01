@@ -127,8 +127,6 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            print("Location to add : ${snapshot.requireData.toJson()}");
-
                             LocationDataModel locationModel = LocationDataModel(
                                 locationId: _locationId,
                                 buildingName: buildingNameController.text,
@@ -139,8 +137,10 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
                                 shortName: shortNameController.text,
                                 userId: _userPhoneNumber!);
 
-                            await managementService.addNewLocation(locationModel).then((_) {
-                              Navigator.of(context).pop();
+                            await managementService.addNewLocation(locationModel).then((isSuccess) {
+                              if (isSuccess) {
+                                Navigator.of(context).pop();
+                              }
                             });
                           },
                           child: const Text("Submit"),

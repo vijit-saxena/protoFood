@@ -49,8 +49,6 @@ class _PaymentsViewState extends State<PaymentsView> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    debugPrint('Payment Successful: ${response.paymentId}');
-
     PaymentDataModel paymentDataModel = PaymentDataModel(
       paymentId: response.paymentId!,
       userId: _userPhoneNumber,
@@ -61,14 +59,14 @@ class _PaymentsViewState extends State<PaymentsView> {
       status: PaymentStatus.Success.name,
     );
 
-    await managementService.recordNewPayment(paymentDataModel).then((_) {
-      Navigator.pop(context, paymentDataModel);
+    await managementService.recordNewPayment(paymentDataModel).then((isSuccess) {
+      if (isSuccess) {
+        Navigator.pop(context, paymentDataModel);
+      }
     });
   }
 
   void _handlePaymentError(PaymentFailureResponse response) async {
-    debugPrint('Payment Error: ${response.code} - ${response.message}');
-
     PaymentDataModel paymentDataModel = PaymentDataModel(
       paymentId: "",
       userId: _userPhoneNumber,
@@ -79,8 +77,10 @@ class _PaymentsViewState extends State<PaymentsView> {
       status: PaymentStatus.Failed.name,
     );
 
-    await managementService.recordNewPayment(paymentDataModel).then((_) {
-      Navigator.pop(context, paymentDataModel);
+    await managementService.recordNewPayment(paymentDataModel).then((isSuccess) {
+      if (isSuccess) {
+        Navigator.pop(context, paymentDataModel);
+      }
     });
   }
 

@@ -31,8 +31,11 @@ class ManagementService {
     return userInfo;
   }
 
-  Future<void> addNewUser(UserDataModel userModel) async {
-    await _dataplaneService.addNewUser(userModel);
+  Future<bool> addNewUser(UserDataModel userModel) async {
+    await _dataplaneService.addNewUser(userModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
   Future<LatLng> getUserCurrentLocationLatLng(String userPhoneNumber) async {
@@ -42,17 +45,20 @@ class ManagementService {
     return currentLocation;
   }
 
-  Future<LocationDataModel> loadClosestUserCurrentLocation(String userPhoneNumber) async {
+  Future<LocationDataModel?> loadClosestUserCurrentLocation(String userPhoneNumber) async {
     LatLng currentLatLng = await getUserCurrentLocationLatLng(userPhoneNumber);
 
-    LocationDataModel currentLocation = await _dataplaneService.getUserClosestLocation(
+    LocationDataModel? currentLocation = await _dataplaneService.getUserClosestLocation(
         currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), userPhoneNumber);
 
     return currentLocation;
   }
 
-  Future<void> addNewLocation(LocationDataModel locationModel) async {
-    await _dataplaneService.addNewLocation(locationModel);
+  Future<bool> addNewLocation(LocationDataModel locationModel) async {
+    await _dataplaneService.addNewLocation(locationModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
   Future<List<LocationDataModel>> getUserAllLocations(String userPhoneNumber) async {
@@ -61,8 +67,11 @@ class ManagementService {
     return userAllLocations;
   }
 
-  Future<void> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
-    await _dataplaneService.addNewTasteTiffinRecord(tasteModel);
+  Future<bool> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
+    await _dataplaneService.addNewTasteTiffinRecord(tasteModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
   Future<TiffinDataModel?> getUserActiveTiffinInfo(String userPhoneNumber) async {
@@ -89,16 +98,25 @@ class ManagementService {
     return tiffinModel?.tiffinId;
   }
 
-  Future<void> createTiffinRecord(TiffinDataModel tiffinModel) async {
-    await _dataplaneService.createTiffinRecord(tiffinModel);
+  Future<bool> createTiffinRecord(TiffinDataModel tiffinModel) async {
+    await _dataplaneService.createTiffinRecord(tiffinModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
-  Future<void> addNewExtraTiffinRecord(ExtraTiffinDataModel extraModel) async {
-    await _dataplaneService.addNewExtraTiffinRecord(extraModel);
+  Future<bool> addNewExtraTiffinRecord(ExtraTiffinDataModel extraModel) async {
+    await _dataplaneService.addNewExtraTiffinRecord(extraModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
-  Future<void> addNewSkipTiffinRecord(SkipTiffinDataModel skipModel) async {
-    await _dataplaneService.addNewSkipTiffinRecord(skipModel);
+  Future<bool> addNewSkipTiffinRecord(SkipTiffinDataModel skipModel) async {
+    await _dataplaneService.addNewSkipTiffinRecord(skipModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
   Future<List<SubscriptionDataModel>> listActiveSubscriptions() async {
@@ -108,12 +126,18 @@ class ManagementService {
     return activeSubscriptions;
   }
 
-  Future<void> recordNewPayment(PaymentDataModel paymentModel) async {
-    await _dataplaneService.recordNewPayment(paymentModel);
+  Future<bool> recordNewPayment(PaymentDataModel paymentModel) async {
+    await _dataplaneService.recordNewPayment(paymentModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
-  Future<void> addNewOrderRecord(OrderDataModel orderModel) async {
-    await _dataplaneService.addNewOrderRecord(orderModel);
+  Future<bool> addNewOrderRecord(OrderDataModel orderModel) async {
+    await _dataplaneService.addNewOrderRecord(orderModel).then((isSuccess) {
+      return isSuccess;
+    });
+    return false;
   }
 
   Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(

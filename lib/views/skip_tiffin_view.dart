@@ -57,7 +57,6 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
     _orderId = Calculator.generateUUID(UuidTag.SkipTiffin);
 
     _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
-    print("TIFFIN : $_tiffinId");
   }
 
   @override
@@ -109,18 +108,20 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
                   timeCreated: currentTime,
                 );
 
-                await managementService.addNewSkipTiffinRecord(model).then((_) async {
-                  OrderDataModel orderModel = OrderDataModel(
-                      orderId: _orderId,
-                      userPhoneNumber: _userPhoneNumber,
-                      timeCreated: currentTime);
+                await managementService.addNewSkipTiffinRecord(model).then((isSuccess) async {
+                  if (isSuccess) {
+                    OrderDataModel orderModel = OrderDataModel(
+                        orderId: _orderId,
+                        userPhoneNumber: _userPhoneNumber,
+                        timeCreated: currentTime);
 
-                  await managementService
-                      .addNewOrderRecord(orderModel)
-                      .then((_) => Navigator.of(context).pop());
+                    await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
+                      if (isSuccess) {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  }
                 });
-
-                print('EXTRA : Order submitted!');
               },
               child: const Text('Submit Order'),
             ),

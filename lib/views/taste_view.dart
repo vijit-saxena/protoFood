@@ -63,7 +63,7 @@ class _TasteViewState extends State<TasteView> {
     _orderId = Calculator.generateUUID(UuidTag.Taste);
 
     await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
-      _finalLocationId = location.locationId;
+      _finalLocationId = location!.locationId;
     });
   }
 
@@ -126,7 +126,6 @@ class _TasteViewState extends State<TasteView> {
                         // replace 3 with better constant variable
                         // show a pop-up for not allowed
                         // todo : calculate number of tastes left per user from DB..
-                        debugPrint("Cannot exceed quantity more than 3");
                       } else {
                         setState(() {
                           _quantity++;
@@ -158,8 +157,6 @@ class _TasteViewState extends State<TasteView> {
                     ),
                   );
 
-                  print('Payment response : ${response.toJson()}');
-
                   if (response.status == PaymentStatus.Success.name) {
                     TasteTiffinDataModel tasteModel = TasteTiffinDataModel(
                       orderId: _orderId,
@@ -172,25 +169,28 @@ class _TasteViewState extends State<TasteView> {
                       timeCreated: response.timeCreated,
                     );
 
-                    await managementService.addNewTasteTiffinRecord(tasteModel).then((_) async {
-                      OrderDataModel orderModel = OrderDataModel(
-                          orderId: _orderId,
-                          userPhoneNumber: _userPhoneNumber,
-                          timeCreated: response.timeCreated);
+                    await managementService
+                        .addNewTasteTiffinRecord(tasteModel)
+                        .then((isSuccess) async {
+                      if (isSuccess) {
+                        OrderDataModel orderModel = OrderDataModel(
+                            orderId: _orderId,
+                            userPhoneNumber: _userPhoneNumber,
+                            timeCreated: response.timeCreated);
 
-                      await managementService
-                          .addNewOrderRecord(orderModel)
-                          .then((_) => Navigator.of(context).pop());
+                        await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
+                          if (isSuccess) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      }
                     });
                   } else {
                     // In case payment fails
                     /*
                     1. Log error message
                     */
-                    print("Payment Failed..");
                   }
-
-                  print('TASTE : Order submitted!');
                 },
                 child: const Text('Submit Order'),
               ),

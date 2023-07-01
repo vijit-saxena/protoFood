@@ -92,9 +92,10 @@ class _AddUserDetailsViewState extends State<AddUserDetailsView> {
                 contact: contact!,
                 email: _emailController.text,
               );
-              print("User data to add : ${userModel.toString()}");
-              await managementService.addNewUser(userModel).then((_) {
-                Navigator.pop(context);
+              await managementService.addNewUser(userModel).then((isSuccess) {
+                if (isSuccess) {
+                  Navigator.pop(context);
+                }
               });
             },
             child: const Text("Submit"),

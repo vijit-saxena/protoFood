@@ -18,7 +18,7 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
   List<SubscriptionDataModel> activeSubscriptionList = [];
 
   late String _userPhoneNumber;
-  late LocationDataModel closestUserLocation;
+  late LocationDataModel? closestUserLocation;
 
   _loadPageData() async {
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
@@ -43,7 +43,7 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text("Location : ${closestUserLocation.roomNumber}"),
+                    Text("Location : ${closestUserLocation!.roomNumber}"),
                     Text("User : ${AuthService.firebase().currentUser?.phoneNumber}"),
                     TextButton(
                       onPressed: () {},

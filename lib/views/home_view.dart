@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/views/add_building_marker_view.dart';
 import 'package:protofood/views/add_user_datails.dart';
@@ -22,6 +23,12 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late String? uid;
+
+  var log = Logger(
+    printer: PrettyPrinter(
+      methodCount: 0,
+    ),
+  );
 
   @override
   void initState() {

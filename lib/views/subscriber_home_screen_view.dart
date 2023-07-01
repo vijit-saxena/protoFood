@@ -24,7 +24,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
   late final String _userPhoneNumber;
   late final UserDataModel? _userInfo;
   late final TiffinDataModel? _userTiffinInfo;
-  late final LocationDataModel _userCurrentLocation;
+  late final LocationDataModel? _userCurrentLocation;
 
   bool _showSubscriptionRenewalBanner = false;
 
@@ -53,9 +53,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
           await managementService.loadClosestUserCurrentLocation(_userPhoneNumber);
 
       _userTiffinInfo = await managementService.getUserActiveTiffinInfo(_userPhoneNumber);
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 
   Future<void> _checkSubscriptionRenewalBanner() async {
@@ -94,7 +92,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.45,
                               child: Text(
-                                _userCurrentLocation.shortName,
+                                _userCurrentLocation!.shortName,
                                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -117,7 +115,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.45,
                           child: Text(
-                            "${_userCurrentLocation.roomNumber}, ${_userCurrentLocation.buildingName}",
+                            "${_userCurrentLocation!.roomNumber}, ${_userCurrentLocation!.buildingName}",
                             style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -270,7 +268,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
             ),
           );
         } else {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
