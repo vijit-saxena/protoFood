@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-const String baseUrl = "http://192.168.48.184:8080/protofood/v1";
+const String baseUrl = "http://192.168.175.184:8080/protofood/v1";
 const Map<String, String> baseHeaders = {"Content-Type": "application/json"};
 
 const String paymentKey = "rzp_test_eBwTFIyskpMbwk";

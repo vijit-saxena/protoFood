@@ -14,7 +14,6 @@ import 'package:protofood/data_models/tiffin_data_model.dart';
 import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/maps.dart';
-import 'package:uuid/uuid.dart';
 
 class ManagementService {
   final DataplaneService _dataplaneService = DataplaneService();
@@ -32,13 +31,10 @@ class ManagementService {
   }
 
   Future<bool> addNewUser(UserDataModel userModel) async {
-    await _dataplaneService.addNewUser(userModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewUser(userModel);
   }
 
-  Future<LatLng> getUserCurrentLocationLatLng(String userPhoneNumber) async {
+  Future<LatLng> getUserCurrentLocationLatLng() async {
     GeolocatorPlatform geolocatorPlatform = GeolocatorPlatform.instance;
     var currentLocation = await Maps.getCurrentPosition(geolocatorPlatform);
 
@@ -46,7 +42,7 @@ class ManagementService {
   }
 
   Future<LocationDataModel?> loadClosestUserCurrentLocation(String userPhoneNumber) async {
-    LatLng currentLatLng = await getUserCurrentLocationLatLng(userPhoneNumber);
+    LatLng currentLatLng = await getUserCurrentLocationLatLng();
 
     LocationDataModel? currentLocation = await _dataplaneService.getUserClosestLocation(
         currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), userPhoneNumber);
@@ -55,10 +51,7 @@ class ManagementService {
   }
 
   Future<bool> addNewLocation(LocationDataModel locationModel) async {
-    await _dataplaneService.addNewLocation(locationModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewLocation(locationModel);
   }
 
   Future<List<LocationDataModel>> getUserAllLocations(String userPhoneNumber) async {
@@ -68,10 +61,7 @@ class ManagementService {
   }
 
   Future<bool> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
-    await _dataplaneService.addNewTasteTiffinRecord(tasteModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewTasteTiffinRecord(tasteModel);
   }
 
   Future<TiffinDataModel?> getUserActiveTiffinInfo(String userPhoneNumber) async {
@@ -99,24 +89,15 @@ class ManagementService {
   }
 
   Future<bool> createTiffinRecord(TiffinDataModel tiffinModel) async {
-    await _dataplaneService.createTiffinRecord(tiffinModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.createTiffinRecord(tiffinModel);
   }
 
   Future<bool> addNewExtraTiffinRecord(ExtraTiffinDataModel extraModel) async {
-    await _dataplaneService.addNewExtraTiffinRecord(extraModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewExtraTiffinRecord(extraModel);
   }
 
   Future<bool> addNewSkipTiffinRecord(SkipTiffinDataModel skipModel) async {
-    await _dataplaneService.addNewSkipTiffinRecord(skipModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewSkipTiffinRecord(skipModel);
   }
 
   Future<List<SubscriptionDataModel>> listActiveSubscriptions() async {
@@ -127,17 +108,11 @@ class ManagementService {
   }
 
   Future<bool> recordNewPayment(PaymentDataModel paymentModel) async {
-    await _dataplaneService.recordNewPayment(paymentModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.recordNewPayment(paymentModel);
   }
 
   Future<bool> addNewOrderRecord(OrderDataModel orderModel) async {
-    await _dataplaneService.addNewOrderRecord(orderModel).then((isSuccess) {
-      return isSuccess;
-    });
-    return false;
+    return await _dataplaneService.addNewOrderRecord(orderModel);
   }
 
   Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(

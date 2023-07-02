@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/add_building_marker_view.dart';
+import 'package:protofood/views/login_view.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   final UserDataModel userInfo;
@@ -119,6 +122,25 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   );
                 }
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => const AddBuildingMarkerView()));
+              },
+              child: const Text("3 - Add location"),
+            ),
+            const SizedBox(height: 8.0),
+            TextButton(
+              onPressed: () {
+                AuthService.firebase().logOut().then((value) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreenView()),
+                      (route) => false);
+                });
+              },
+              child: const Text("Logout"),
             ),
           ],
         ),

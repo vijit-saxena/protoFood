@@ -52,7 +52,7 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: managementService.getUserCurrentLocationLatLng(_userPhoneNumber!),
+        future: managementService.getUserCurrentLocationLatLng(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

@@ -9,7 +9,7 @@ class LoginScreenView extends StatefulWidget {
 }
 
 class _LoginScreenViewState extends State<LoginScreenView> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +23,8 @@ class _LoginScreenViewState extends State<LoginScreenView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => OTPScreenView(_controller.text)));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => OTPScreenView(_controller.text)));
             },
             child: const Text("Login"),
           ),

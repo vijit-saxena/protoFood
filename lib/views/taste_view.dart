@@ -26,7 +26,7 @@ class _TasteViewState extends State<TasteView> {
 
   late final String _userPhoneNumber;
   late final String _orderId;
-  late final String _finalLocationId;
+  late final String? _finalLocationId;
 
   final List<String> meals = [Meal.Lunch.name, Meal.Dinner.name];
 
@@ -63,7 +63,7 @@ class _TasteViewState extends State<TasteView> {
     _orderId = Calculator.generateUUID(UuidTag.Taste);
 
     await managementService.loadClosestUserCurrentLocation(_userPhoneNumber).then((location) {
-      _finalLocationId = location!.locationId;
+      _finalLocationId = location?.locationId;
     });
   }
 
@@ -165,7 +165,7 @@ class _TasteViewState extends State<TasteView> {
                       meal: _selectedMeal,
                       quantity: _quantity,
                       paymentId: response.paymentId,
-                      locationId: _finalLocationId,
+                      locationId: _finalLocationId!,
                       timeCreated: response.timeCreated,
                     );
 
