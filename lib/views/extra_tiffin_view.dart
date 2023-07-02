@@ -62,7 +62,6 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
     _orderId = Calculator.generateUUID(UuidTag.ExtraTiffin);
 
     _tiffinId = await managementService.getUserActiveTiffinId(_userPhoneNumber);
-    print("TIFFIN : $_tiffinId");
   }
 
   @override
@@ -149,8 +148,6 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                     ),
                   );
 
-                  print('Payment response : ${response.toJson()}');
-
                   if (response.status == PaymentStatus.Success.name) {
                     ExtraTiffinDataModel model = ExtraTiffinDataModel(
                         extraId: _orderId,
@@ -162,25 +159,26 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                         paymentId: response.paymentId,
                         timeCreated: response.timeCreated);
 
-                    await managementService.addNewExtraTiffinRecord(model).then((_) async {
-                      OrderDataModel orderModel = OrderDataModel(
-                          orderId: _orderId,
-                          userPhoneNumber: _userPhoneNumber,
-                          timeCreated: response.timeCreated);
+                    await managementService.addNewExtraTiffinRecord(model).then((isSuccess) async {
+                      if (isSuccess) {
+                        OrderDataModel orderModel = OrderDataModel(
+                            orderId: _orderId,
+                            userPhoneNumber: _userPhoneNumber,
+                            timeCreated: response.timeCreated);
 
-                      await managementService
-                          .addNewOrderRecord(orderModel)
-                          .then((_) => Navigator.of(context).pop());
+                        await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
+                          if (isSuccess) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      }
                     });
                   } else {
                     // In case payment fails
                     /*
                     1. Log error message
                     */
-                    print("Payment Failed..");
                   }
-
-                  print('EXTRA : Order submitted!');
                 },
                 child: const Text('Submit Order'),
               ),

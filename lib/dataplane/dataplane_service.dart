@@ -1,5 +1,5 @@
 import "dart:convert";
-import "dart:ffi";
+import "dart:io";
 
 import "package:protofood/config/constants.dart";
 import "package:http/http.dart" as http;
@@ -16,17 +16,13 @@ import "package:protofood/data_models/tiffin_data_model.dart";
 import "package:protofood/data_models/user_data_model.dart";
 
 class DataplaneService {
-  Future<void> addNewUser(UserDataModel model) async {
+  Future<bool> addNewUser(UserDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddUserApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Add User response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
   Future<TiffinDataModel?> getUserActiveTiffin(String userPhoneNumber, String dateTime) async {
@@ -37,7 +33,9 @@ class DataplaneService {
       headers: baseHeaders,
     );
 
-    return TiffinDataModel.fromJson(json.decode(response.body));
+    if (response.body.isEmpty) return null;
+
+    return response.statusCode == 200 ? TiffinDataModel.fromJson(json.decode(response.body)) : null;
   }
 
   Future<TiffinDataModel?> getUserFutureTiffin(String userPhoneNumber, String dateTime) async {
@@ -48,7 +46,9 @@ class DataplaneService {
       headers: baseHeaders,
     );
 
-    return TiffinDataModel.fromJson(json.decode(response.body));
+    if (response.body.isEmpty) return null;
+
+    return response.statusCode == 200 ? TiffinDataModel.fromJson(json.decode(response.body)) : null;
   }
 
   Future<UserDataModel?> getUserWithPhoneNumber(String userPhoneNumber) async {
@@ -58,22 +58,17 @@ class DataplaneService {
       endpoint,
       headers: baseHeaders,
     );
-    print("Fetch User response body is : ${response.body}");
 
-    return UserDataModel.fromMap(json.decode(response.body));
+    return response.statusCode == 200 ? UserDataModel.fromMap(json.decode(response.body)) : null;
   }
 
-  Future<void> addNewLocation(LocationDataModel model) async {
+  Future<bool> addNewLocation(LocationDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddNewLocationApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Add Location response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
   Future<List<LocationDataModel>> getUserAllLocations(String userPhoneNumber) async {
@@ -83,8 +78,6 @@ class DataplaneService {
       endpoint,
       headers: baseHeaders,
     );
-
-    print("JSON DATA : ${response.body}");
 
     List<dynamic> jsonList = json.decode(response.body);
 
@@ -100,23 +93,19 @@ class DataplaneService {
   Future<void> listAllSubscriptions() async {
     var endpoint = Uri.parse(_getListAllSubscriptionsApiEndpoint());
 
-    http.Response response = await http.get(
+    await http.get(
       endpoint,
       headers: baseHeaders,
     );
-    print("All Subscriptions Response body is : ${response.body}");
   }
 
   Future<List<SubscriptionDataModel>> listActiveSubscriptions() async {
     var endpoint = Uri.parse(_getListActiveSubscriptionsApiEndpoint());
-    print("Endpoint : $endpoint");
 
     http.Response response = await http.get(
       endpoint,
       headers: baseHeaders,
     );
-
-    print("response.body is : ${response.body}");
 
     List<dynamic> jsonList = jsonDecode(response.body);
     List<SubscriptionDataModel> subscriptions = [];
@@ -127,62 +116,55 @@ class DataplaneService {
     return subscriptions;
   }
 
-  Future<LocationDataModel> getUserClosestLocation(
+  Future<LocationDataModel?> getUserClosestLocation(
       String latitude, String longitude, String userPhoneNumber) async {
-    var endpoint =
-        Uri.parse(_getClosestUserLocationApiEndpoint(latitude, longitude, userPhoneNumber));
+    var endpoint = Uri.parse(_getClosestUserLocationApiEndpoint(
+      latitude,
+      longitude,
+      userPhoneNumber,
+    ));
 
     http.Response response = await http.get(
       endpoint,
       headers: baseHeaders,
     );
+
+    if (response.statusCode != 200 || response.body.isEmpty) {
+      return null;
+    }
+
     var location = jsonDecode(response.body);
-
-    print(location);
-
     return LocationDataModel.fromJson(location);
   }
 
-  Future<void> recordNewPayment(PaymentDataModel model) async {
+  Future<bool> recordNewPayment(PaymentDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddNewPaymentApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Record Payment response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
-  Future<void> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
+  Future<bool> addNewTasteTiffinRecord(TasteTiffinDataModel tasteModel) async {
     var body = json.encode(tasteModel.toJson());
     var endpoint = Uri.parse(_getAddTasteTiffinRecordApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Added Taste Tiffin response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
-  Future<void> createTiffinRecord(TiffinDataModel tiffinModel) async {
+  Future<bool> createTiffinRecord(TiffinDataModel tiffinModel) async {
     var body = json.encode(tiffinModel.toJson());
     var endpoint = Uri.parse(_getAddTiffinRecordApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Added Tiffin response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
-  Future<TiffinDataModel> getTiffinInfo(String tiffinId) async {
+  Future<TiffinDataModel?> getTiffinInfo(String tiffinId) async {
     var endpoint = Uri.parse(__getTiffinInfoApiEndpoint(tiffinId));
 
     http.Response response = await http.get(
@@ -190,46 +172,34 @@ class DataplaneService {
       headers: baseHeaders,
     );
 
-    return TiffinDataModel.fromJson(json.decode(response.body));
+    return response.statusCode == 200 ? TiffinDataModel.fromJson(json.decode(response.body)) : null;
   }
 
-  Future<void> addNewExtraTiffinRecord(ExtraTiffinDataModel model) async {
+  Future<bool> addNewExtraTiffinRecord(ExtraTiffinDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddExtraTiffinRecordApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Added Extra-Tiffin response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
-  Future<void> addNewSkipTiffinRecord(SkipTiffinDataModel model) async {
+  Future<bool> addNewSkipTiffinRecord(SkipTiffinDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddSkipTiffinRecordApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Added Skip-Tiffin response status is : ${response.statusCode}");
+    return response.statusCode == 200 ? true : false;
   }
 
-  Future<void> addNewOrderRecord(OrderDataModel model) async {
+  Future<bool> addNewOrderRecord(OrderDataModel model) async {
     var body = json.encode(model.toJson());
     var endpoint = Uri.parse(_getAddNewOrderRecordApiEndpoint());
 
-    http.Response response = await http.post(
-      endpoint,
-      headers: baseHeaders,
-      body: body,
-    );
+    http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
-    print("Added order details to Order collection : ${model.orderId}");
+    return response.statusCode == 200 ? true : false;
   }
 
   Future<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
@@ -246,7 +216,7 @@ class DataplaneService {
     for (var json in jsonResponse) {
       ConsolidatedOrder consolidatedOrder = ConsolidatedOrder.fromJson(json);
       if (json['taste'] != null) {
-        consolidatedOrder.setTaste(json['skip']);
+        consolidatedOrder.setTaste(json['taste']);
       } else if (json['tiffin'] != null) {
         consolidatedOrder.setTiffin(json['tiffin']);
       } else if (json['extra'] != null) {
@@ -342,7 +312,7 @@ class DataplaneService {
   }
 
   String _getAddUserApiEndpoint() {
-    return "$baseUrl/user";
+    return "$baseUrl/createUser";
   }
 
   String _getFetchUserApiEndpoint(String userPhoneNumber) {
