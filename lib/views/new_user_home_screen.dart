@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
+import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/subscription_options_view.dart';
 import 'package:protofood/views/taste_view.dart';
+import 'package:protofood/views/user_details_view.dart';
 
 class NewUserHomeScreen extends StatefulWidget {
   const NewUserHomeScreen({super.key});
@@ -20,6 +22,7 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
   List<SubscriptionDataModel> activeSubscriptionList = [];
 
   late String _userPhoneNumber;
+  late final UserDataModel? _userInfo;
   late LocationDataModel? closestUserLocation;
 
   @override
@@ -39,6 +42,8 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
 
   Future<void> _loadPageData() async {
     _userPhoneNumber = AuthService.firebase().currentUser!.phoneNumber!;
+    _userInfo = await managementService.getUserInfo(_userPhoneNumber);
+
     activeSubscriptionList = await managementService.listActiveSubscriptions();
 
     closestUserLocation = await managementService.loadClosestUserCurrentLocation(_userPhoneNumber);
@@ -61,8 +66,65 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                      Text("Location : ${closestUserLocation?.roomNumber}"),
-                      Text("User : ${AuthService.firebase().currentUser?.phoneNumber}"),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on_outlined),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.45,
+                                    child: Text(
+                                      closestUserLocation!.shortName,
+                                      style: const TextStyle(
+                                          fontSize: 24, fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                    ),
+                                  ),
+                                  DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down,
+                                      ),
+                                      items: const [],
+                                      onChanged: (value) => print(value),
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                child: Text(
+                                  "${closestUserLocation!.roomNumber}, ${closestUserLocation!.buildingName}",
+                                  style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.person),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => UserDetailsScreen(
+                                        userInfo: _userInfo!,
+                                      )));
+                            },
+                            iconSize: 35,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context)
@@ -72,8 +134,8 @@ class _NewUserHomeScreenState extends State<NewUserHomeScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => SubscriptionOptionsView()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const SubscriptionOptionsView()));
                         },
                         child: const Text("Subscription Options"),
                       ),

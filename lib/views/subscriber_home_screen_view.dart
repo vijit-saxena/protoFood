@@ -155,7 +155,7 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                         ),
                         Text(
                           "${Calculator.getActiveTiffinDaysRemaining(_userTiffinInfo!).toString()} Days", // Replace with your dynamic value
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
