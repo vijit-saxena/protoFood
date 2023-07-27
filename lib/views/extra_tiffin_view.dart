@@ -4,9 +4,11 @@ import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/extra_tiffin_data_model.dart';
 import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
+import 'package:protofood/dataplane/api_models/extra_tiffin_api_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/home_view.dart';
 import 'package:protofood/views/payments_view.dart';
 import 'package:uuid/uuid.dart';
 
@@ -149,28 +151,34 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                   );
 
                   if (response.status == PaymentStatus.Success.name) {
-                    ExtraTiffinDataModel model = ExtraTiffinDataModel(
-                        extraId: _orderId,
-                        userId: _userPhoneNumber,
-                        tiffinId: _tiffinId!,
-                        date: _selectedDate,
-                        meal: _selectedMeal,
-                        quantity: _quantity,
-                        paymentId: response.paymentId,
-                        timeCreated: response.timeCreated);
+                    // ExtraTiffinDataModel model = ExtraTiffinDataModel(
+                    //     extraId: _orderId,
+                    //     userId: _userPhoneNumber,
+                    //     tiffinId: _tiffinId!,
+                    //     date: _selectedDate,
+                    //     meal: _selectedMeal,
+                    //     quantity: _quantity,
+                    //     paymentId: response.paymentId,
+                    //     timeCreated: response.timeCreated);
+
+                    ExtraTiffinApiModel model = ExtraTiffinApiModel(
+                      extraId: _orderId,
+                      userId: _userPhoneNumber,
+                      tiffinId: _tiffinId!,
+                      date: _selectedDate,
+                      meal: _selectedMeal,
+                      quantity: _quantity,
+                      timeCreated: response.timeCreated,
+                      paymentId: response.paymentId,
+                      amountInRs: amountInRs,
+                      action: response.action,
+                      status: response.status,
+                    );
 
                     await managementService.addNewExtraTiffinRecord(model).then((isSuccess) async {
                       if (isSuccess) {
-                        OrderDataModel orderModel = OrderDataModel(
-                            orderId: _orderId,
-                            userPhoneNumber: _userPhoneNumber,
-                            timeCreated: response.timeCreated);
-
-                        await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
-                          if (isSuccess) {
-                            Navigator.of(context).pop();
-                          }
-                        });
+                        Navigator.pushReplacement(
+                            context, MaterialPageRoute(builder: (context) => const HomeView()));
                       }
                     });
                   } else {
