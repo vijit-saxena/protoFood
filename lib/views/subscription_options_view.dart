@@ -4,9 +4,9 @@ import 'package:protofood/service/management_service.dart';
 import 'package:protofood/views/subscription_summary_view.dart';
 
 class SubscriptionOptionsView extends StatefulWidget {
-  DateTime? initialDate;
+  final DateTime? initialDate;
 
-  SubscriptionOptionsView({Key? key, this.initialDate}) : super(key: key);
+  const SubscriptionOptionsView({Key? key, this.initialDate}) : super(key: key);
 
   @override
   State<SubscriptionOptionsView> createState() => _SubscriptionOptionsViewState();

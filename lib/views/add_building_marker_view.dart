@@ -7,6 +7,7 @@ import 'package:protofood/data_models/location_data_model.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
 import 'package:protofood/service/maps.dart';
+import 'package:protofood/views/home_view.dart';
 
 class AddBuildingMarkerView extends StatefulWidget {
   const AddBuildingMarkerView({Key? key}) : super(key: key);
@@ -139,7 +140,10 @@ class _CurrentLocationViewState extends State<AddBuildingMarkerView> {
 
                             await managementService.addNewLocation(locationModel).then((isSuccess) {
                               if (isSuccess) {
-                                Navigator.of(context).pop();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const HomeView()),
+                                    (route) => false);
                               }
                             });
                           },

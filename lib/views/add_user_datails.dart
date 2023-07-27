@@ -7,6 +7,7 @@ import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/add_building_marker_view.dart';
 import 'package:protofood/views/home_view.dart';
 
 // ignore: constant_identifier_names
@@ -98,8 +99,10 @@ class _AddUserDetailsViewState extends State<AddUserDetailsView> {
 
               await managementService.addNewUser(userModel).then((isSuccess) {
                 if (isSuccess) {
-                  Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder: (context) => const HomeView()), (route) => false);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddBuildingMarkerView()),
+                      (route) => false);
                 }
               });
             },
