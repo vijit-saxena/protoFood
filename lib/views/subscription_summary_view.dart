@@ -1,19 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
-import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/subscription_data_model.dart';
-import 'package:protofood/data_models/tiffin_data_model.dart';
+import 'package:protofood/dataplane/api_models/tiffin_api_model.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/home_view.dart';
 import 'package:protofood/views/payments_view.dart';
 
 class SubscriptionSummaryView extends StatefulWidget {
   final SubscriptionDataModel subscriptionData;
-  DateTime? initialDate;
+  final DateTime? initialDate;
 
-  SubscriptionSummaryView({
+  const SubscriptionSummaryView({
     Key? key,
     required this.subscriptionData,
     this.initialDate,
@@ -112,41 +114,33 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
                   );
 
                   /*
-                  1. Save payments info
-                  2. Save tiffins info
+                  1. Save tiffins info
                   */
-
-                  TiffinDataModel tiffinDataModel = TiffinDataModel(
-                      tiffinId: _orderId,
-                      userId: _userPhoneNumber,
-                      startDate: _selectedDate,
-                      endDate: _selectedDate.add(
-                        Duration(days: widget.subscriptionData.durationInDays),
-                      ),
-                      subscriptionId: widget.subscriptionData.subscriptionId,
-                      locationId: _finalLocationId,
-                      meal: widget.subscriptionData.mealType,
-                      paymentId: response.paymentId,
-                      timeCreated: response.timeCreated,
-                      timeUpdated: response.timeCreated,
-                      extras: List.empty(),
-                      skips: List.empty());
+                  TiffinApiDataModel tiffinApiModel = TiffinApiDataModel(
+                    tiffinId: _orderId,
+                    userId: _userPhoneNumber,
+                    startDate: _selectedDate,
+                    endDate: _selectedDate.add(
+                      Duration(days: widget.subscriptionData.durationInDays),
+                    ),
+                    subscriptionId: widget.subscriptionData.subscriptionId,
+                    locationId: _finalLocationId,
+                    meal: widget.subscriptionData.mealType,
+                    timeCreated: response.timeCreated,
+                    timeUpdated: response.timeCreated,
+                    extras: List.empty(),
+                    skips: List.empty(),
+                    paymentId: response.paymentId,
+                    amountInRs: int.parse(response.amountInRs),
+                    action: response.action,
+                    status: response.status,
+                  );
 
                   await managementService
-                      .createTiffinRecord(tiffinDataModel)
+                      .processTiffinSubscription(tiffinApiModel)
                       .then((isSuccess) async {
-                    if (isSuccess) {
-                      OrderDataModel orderModel = OrderDataModel(
-                          orderId: _orderId,
-                          userPhoneNumber: _userPhoneNumber,
-                          timeCreated: response.timeCreated);
-
-                      await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
-                        if (isSuccess) {
-                          Navigator.of(context).pop();
-                        }
-                      });
-                    }
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const HomeView()));
                   });
                 },
                 child: const Text("Proceed to payment"),
