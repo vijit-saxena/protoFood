@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -102,46 +103,12 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  PaymentDataModel response = await Navigator.push(
+                  Completer<PaymentDataModel?> completer = Completer<PaymentDataModel?>();
+                  _showExpandablePaymentScreen(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentsView(
-                        amountInRs: 3000,
-                        orderId: _orderId,
-                        action: UserAction.Tiffin,
-                      ),
-                    ),
+                    3000,
+                    completer,
                   );
-
-                  /*
-                  1. Save tiffins info
-                  */
-                  TiffinApiDataModel tiffinApiModel = TiffinApiDataModel(
-                    tiffinId: _orderId,
-                    userId: _userPhoneNumber,
-                    startDate: _selectedDate,
-                    endDate: _selectedDate.add(
-                      Duration(days: widget.subscriptionData.durationInDays),
-                    ),
-                    subscriptionId: widget.subscriptionData.subscriptionId,
-                    locationId: _finalLocationId,
-                    meal: widget.subscriptionData.mealType,
-                    timeCreated: response.timeCreated,
-                    timeUpdated: response.timeCreated,
-                    extras: List.empty(),
-                    skips: List.empty(),
-                    paymentId: response.paymentId,
-                    amountInRs: int.parse(response.amountInRs),
-                    action: response.action,
-                    status: response.status,
-                  );
-
-                  await managementService
-                      .processTiffinSubscription(tiffinApiModel)
-                      .then((isSuccess) async {
-                    Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => const HomeView()));
-                  });
                 },
                 child: const Text("Proceed to payment"),
               ),
@@ -150,5 +117,64 @@ class _SubscriptionSummaryViewState extends State<SubscriptionSummaryView> {
         ),
       ),
     );
+  }
+
+  void _showExpandablePaymentScreen(
+    BuildContext context,
+    int amountInRs,
+    Completer<PaymentDataModel?> completer,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: PaymentsView(
+            amountInRs: amountInRs,
+            orderId: _orderId,
+            action: UserAction.ExtraTiffin,
+            completer: completer,
+          ),
+        );
+      },
+    ).then((_) {
+      // This block will be executed when the bottom sheet is dismissed
+      print("Expandable screen dismissed");
+
+      completer.future.then((response) async {
+        if (response != null) {
+          if (response.status == PaymentStatus.Success.name) {
+            TiffinApiDataModel tiffinApiModel = TiffinApiDataModel(
+              tiffinId: _orderId,
+              userId: _userPhoneNumber,
+              startDate: _selectedDate,
+              endDate: _selectedDate.add(
+                Duration(days: widget.subscriptionData.durationInDays),
+              ),
+              subscriptionId: widget.subscriptionData.subscriptionId,
+              locationId: _finalLocationId,
+              meal: widget.subscriptionData.mealType,
+              timeCreated: response.timeCreated,
+              timeUpdated: response.timeCreated,
+              extras: List.empty(),
+              skips: List.empty(),
+              paymentId: response.paymentId,
+              amountInRs: int.parse(response.amountInRs),
+              action: response.action,
+              status: response.status,
+            );
+
+            await managementService
+                .processTiffinSubscription(tiffinApiModel)
+                .then((isSuccess) async {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const HomeView()));
+            });
+          } else {}
+        } else {
+          print("It is null");
+        }
+      });
+    });
   }
 }

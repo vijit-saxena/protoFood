@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:protofood/auth/auth_service.dart';
@@ -145,42 +147,15 @@ class _TasteViewState extends State<TasteView> {
                     2. Redirect to Payments Flow (orderId, amount)
                     3. Save Taste data (orderId, userId, date, meal, quantity, paymentId, locationId, timeCreated)
                     4. Save Taste orderId in User
-                    */
+                  */
                   var amountInRs = 70 * _quantity;
+                  Completer<PaymentDataModel?> completer = Completer<PaymentDataModel?>();
 
-                  PaymentDataModel response = await Navigator.push(
+                  _showExpandablePaymentScreen(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentsView(
-                        amountInRs: amountInRs,
-                        orderId: _orderId,
-                        action: UserAction.Taste,
-                      ),
-                    ),
+                    amountInRs,
+                    completer,
                   );
-
-                  if (response.status == PaymentStatus.Success.name) {
-                    TasteTiffinApiModel model = TasteTiffinApiModel(
-                      tasteId: _orderId,
-                      userId: _userPhoneNumber,
-                      date: _selectedDate,
-                      meal: _selectedMeal,
-                      quantity: _quantity,
-                      locationId: _finalLocationId!,
-                      timeCreated: response.timeCreated,
-                      paymentId: response.paymentId,
-                      amountInRs: amountInRs,
-                      action: response.action,
-                      status: response.status,
-                    );
-
-                    await managementService.addNewTasteTiffinRecord(model).then((isSuccess) async {
-                      if (isSuccess) {
-                        Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (context) => const HomeView()));
-                      }
-                    });
-                  }
                 },
                 child: const Text('Submit Order'),
               ),
@@ -189,5 +164,58 @@ class _TasteViewState extends State<TasteView> {
         ),
       ),
     );
+  }
+
+  void _showExpandablePaymentScreen(
+    BuildContext context,
+    int amountInRs,
+    Completer<PaymentDataModel?> completer,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: PaymentsView(
+            amountInRs: amountInRs,
+            orderId: _orderId,
+            action: UserAction.ExtraTiffin,
+            completer: completer,
+          ),
+        );
+      },
+    ).then((_) {
+      // This block will be executed when the bottom sheet is dismissed
+      print("Expandable screen dismissed");
+
+      completer.future.then((response) async {
+        if (response != null) {
+          if (response.status == PaymentStatus.Success.name) {
+            TasteTiffinApiModel model = TasteTiffinApiModel(
+              tasteId: _orderId,
+              userId: _userPhoneNumber,
+              date: _selectedDate,
+              meal: _selectedMeal,
+              quantity: _quantity,
+              locationId: _finalLocationId!,
+              timeCreated: response.timeCreated,
+              paymentId: response.paymentId,
+              amountInRs: amountInRs,
+              action: response.action,
+              status: response.status,
+            );
+
+            await managementService.addNewTasteTiffinRecord(model).then((isSuccess) async {
+              if (isSuccess) {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => const HomeView()));
+              }
+            });
+          } else {}
+        } else {
+          print("It is null");
+        }
+      });
+    });
   }
 }

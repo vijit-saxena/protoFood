@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
@@ -139,54 +141,13 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
                     */
                   var amountInRs = 70 * _quantity;
 
-                  PaymentDataModel response = await Navigator.push(
+                  Completer<PaymentDataModel?> completer = Completer<PaymentDataModel?>();
+
+                  _showExpandablePaymentScreen(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentsView(
-                        amountInRs: amountInRs,
-                        orderId: _orderId,
-                        action: UserAction.ExtraTiffin,
-                      ),
-                    ),
+                    amountInRs,
+                    completer,
                   );
-
-                  if (response.status == PaymentStatus.Success.name) {
-                    // ExtraTiffinDataModel model = ExtraTiffinDataModel(
-                    //     extraId: _orderId,
-                    //     userId: _userPhoneNumber,
-                    //     tiffinId: _tiffinId!,
-                    //     date: _selectedDate,
-                    //     meal: _selectedMeal,
-                    //     quantity: _quantity,
-                    //     paymentId: response.paymentId,
-                    //     timeCreated: response.timeCreated);
-
-                    ExtraTiffinApiModel model = ExtraTiffinApiModel(
-                      extraId: _orderId,
-                      userId: _userPhoneNumber,
-                      tiffinId: _tiffinId!,
-                      date: _selectedDate,
-                      meal: _selectedMeal,
-                      quantity: _quantity,
-                      timeCreated: response.timeCreated,
-                      paymentId: response.paymentId,
-                      amountInRs: amountInRs,
-                      action: response.action,
-                      status: response.status,
-                    );
-
-                    await managementService.addNewExtraTiffinRecord(model).then((isSuccess) async {
-                      if (isSuccess) {
-                        Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (context) => const HomeView()));
-                      }
-                    });
-                  } else {
-                    // In case payment fails
-                    /*
-                    1. Log error message
-                    */
-                  }
                 },
                 child: const Text('Submit Order'),
               ),
@@ -195,5 +156,58 @@ class _ExtraTiffinViewState extends State<ExtraTiffinView> {
         ),
       ),
     );
+  }
+
+  void _showExpandablePaymentScreen(
+    BuildContext context,
+    int amountInRs,
+    Completer<PaymentDataModel?> completer,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: PaymentsView(
+            amountInRs: amountInRs,
+            orderId: _orderId,
+            action: UserAction.ExtraTiffin,
+            completer: completer,
+          ),
+        );
+      },
+    ).then((_) {
+      // This block will be executed when the bottom sheet is dismissed
+      print("Expandable screen dismissed");
+
+      completer.future.then((response) async {
+        if (response != null) {
+          if (response.status == PaymentStatus.Success.name) {
+            ExtraTiffinApiModel model = ExtraTiffinApiModel(
+              extraId: _orderId,
+              userId: _userPhoneNumber,
+              tiffinId: _tiffinId!,
+              date: _selectedDate,
+              meal: _selectedMeal,
+              quantity: _quantity,
+              timeCreated: response.timeCreated,
+              paymentId: response.paymentId,
+              amountInRs: amountInRs,
+              action: response.action,
+              status: response.status,
+            );
+
+            await managementService.addNewExtraTiffinRecord(model).then((isSuccess) async {
+              if (isSuccess) {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => const HomeView()));
+              }
+            });
+          } else {}
+        } else {
+          print("It is null");
+        }
+      });
+    });
   }
 }

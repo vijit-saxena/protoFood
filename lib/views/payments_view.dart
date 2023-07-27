@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
@@ -10,12 +12,14 @@ class PaymentsView extends StatefulWidget {
   final String orderId;
   final int amountInRs;
   final UserAction action;
+  final Completer<PaymentDataModel?> completer;
 
   const PaymentsView({
     required this.amountInRs,
     required this.orderId,
     super.key,
     required this.action,
+    required this.completer,
   });
 
   @override
@@ -61,7 +65,8 @@ class _PaymentsViewState extends State<PaymentsView> {
 
     await managementService.recordNewPayment(paymentDataModel).then((isSuccess) {
       if (isSuccess) {
-        Navigator.pop(context, paymentDataModel);
+        widget.completer.complete(paymentDataModel);
+        Navigator.of(context).pop();
       }
     });
   }
@@ -79,7 +84,8 @@ class _PaymentsViewState extends State<PaymentsView> {
 
     await managementService.recordNewPayment(paymentDataModel).then((isSuccess) {
       if (isSuccess) {
-        Navigator.pop(context, paymentDataModel);
+        widget.completer.complete(paymentDataModel);
+        Navigator.of(context).pop();
       }
     });
   }
