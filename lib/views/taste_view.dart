@@ -5,9 +5,11 @@ import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/payment_data_model.dart';
 import 'package:protofood/data_models/taste_tiffin_data_model.dart';
+import 'package:protofood/dataplane/api_models/taste_tiffin_api_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/home_view.dart';
 import 'package:protofood/views/payments_view.dart';
 
 class TasteView extends StatefulWidget {
@@ -158,38 +160,26 @@ class _TasteViewState extends State<TasteView> {
                   );
 
                   if (response.status == PaymentStatus.Success.name) {
-                    TasteTiffinDataModel tasteModel = TasteTiffinDataModel(
-                      orderId: _orderId,
+                    TasteTiffinApiModel model = TasteTiffinApiModel(
+                      tasteId: _orderId,
                       userId: _userPhoneNumber,
                       date: _selectedDate,
                       meal: _selectedMeal,
                       quantity: _quantity,
-                      paymentId: response.paymentId,
                       locationId: _finalLocationId!,
                       timeCreated: response.timeCreated,
+                      paymentId: response.paymentId,
+                      amountInRs: amountInRs,
+                      action: response.action,
+                      status: response.status,
                     );
 
-                    await managementService
-                        .addNewTasteTiffinRecord(tasteModel)
-                        .then((isSuccess) async {
+                    await managementService.addNewTasteTiffinRecord(model).then((isSuccess) async {
                       if (isSuccess) {
-                        OrderDataModel orderModel = OrderDataModel(
-                            orderId: _orderId,
-                            userPhoneNumber: _userPhoneNumber,
-                            timeCreated: response.timeCreated);
-
-                        await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
-                          if (isSuccess) {
-                            Navigator.of(context).pop();
-                          }
-                        });
+                        Navigator.pushReplacement(
+                            context, MaterialPageRoute(builder: (context) => const HomeView()));
                       }
                     });
-                  } else {
-                    // In case payment fails
-                    /*
-                    1. Log error message
-                    */
                   }
                 },
                 child: const Text('Submit Order'),
