@@ -3,9 +3,10 @@ import 'package:protofood/auth/auth_service.dart';
 import 'package:protofood/config/constants.dart';
 import 'package:protofood/data_models/order_data_model.dart';
 import 'package:protofood/data_models/skip_tiffin_data_model.dart';
+import 'package:protofood/dataplane/api_models/skip_tiffin_api_model.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
-import 'package:uuid/uuid.dart';
+import 'package:protofood/views/home_view.dart';
 
 class SkipTiffinView extends StatefulWidget {
   const SkipTiffinView({super.key});
@@ -99,27 +100,19 @@ class _SkipTiffinViewState extends State<SkipTiffinView> {
             ElevatedButton(
               onPressed: () async {
                 DateTime currentTime = DateTime.now();
-                SkipTiffinDataModel model = SkipTiffinDataModel(
-                  skipId: _orderId,
-                  userId: _userPhoneNumber,
-                  tiffinId: _tiffinId!,
-                  date: _selectedDate,
-                  meal: _selectedMeal,
-                  timeCreated: currentTime,
-                );
+
+                SkipTiffinApiModel model = SkipTiffinApiModel(
+                    skipId: _orderId,
+                    userId: _userPhoneNumber,
+                    date: _selectedDate,
+                    meal: _selectedMeal,
+                    tiffinId: _tiffinId!,
+                    timeCreated: currentTime);
 
                 await managementService.addNewSkipTiffinRecord(model).then((isSuccess) async {
                   if (isSuccess) {
-                    OrderDataModel orderModel = OrderDataModel(
-                        orderId: _orderId,
-                        userPhoneNumber: _userPhoneNumber,
-                        timeCreated: currentTime);
-
-                    await managementService.addNewOrderRecord(orderModel).then((isSuccess) {
-                      if (isSuccess) {
-                        Navigator.of(context).pop();
-                      }
-                    });
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const HomeView()));
                   }
                 });
               },

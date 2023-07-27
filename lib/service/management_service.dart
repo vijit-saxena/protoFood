@@ -13,6 +13,7 @@ import 'package:protofood/data_models/taste_tiffin_data_model.dart';
 import 'package:protofood/data_models/tiffin_data_model.dart';
 import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/dataplane/api_models/extra_tiffin_api_model.dart';
+import 'package:protofood/dataplane/api_models/skip_tiffin_api_model.dart';
 import 'package:protofood/dataplane/api_models/tiffin_api_model.dart';
 import 'package:protofood/dataplane/dataplane_service.dart';
 import 'package:protofood/service/maps.dart';
@@ -102,7 +103,7 @@ class ManagementService {
     return await _dataplaneService.addNewExtraTiffinRecord(extraModel);
   }
 
-  Future<bool> addNewSkipTiffinRecord(SkipTiffinDataModel skipModel) async {
+  Future<bool> addNewSkipTiffinRecord(SkipTiffinApiModel skipModel) async {
     return await _dataplaneService.addNewSkipTiffinRecord(skipModel);
   }
 

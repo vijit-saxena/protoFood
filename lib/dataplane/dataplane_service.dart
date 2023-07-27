@@ -15,6 +15,7 @@ import "package:protofood/data_models/taste_tiffin_data_model.dart";
 import "package:protofood/data_models/tiffin_data_model.dart";
 import "package:protofood/data_models/user_data_model.dart";
 import "package:protofood/dataplane/api_models/extra_tiffin_api_model.dart";
+import "package:protofood/dataplane/api_models/skip_tiffin_api_model.dart";
 import "package:protofood/dataplane/api_models/tiffin_api_model.dart";
 
 class DataplaneService {
@@ -195,9 +196,9 @@ class DataplaneService {
     return response.statusCode == 200 ? true : false;
   }
 
-  Future<bool> addNewSkipTiffinRecord(SkipTiffinDataModel model) async {
+  Future<bool> addNewSkipTiffinRecord(SkipTiffinApiModel model) async {
     var body = json.encode(model.toJson());
-    var endpoint = Uri.parse(_getAddSkipTiffinRecordApiEndpoint());
+    var endpoint = Uri.parse(_getAddSkipTiffinRecordApiEndpoint(model.userId));
 
     http.Response response = await http.post(endpoint, headers: baseHeaders, body: body);
 
@@ -284,8 +285,8 @@ class DataplaneService {
     return "$baseUrl/getTiffinInfo?tiffinId=$tiffinId";
   }
 
-  String _getAddSkipTiffinRecordApiEndpoint() {
-    return "$baseUrl/addSkipTiffinRecord";
+  String _getAddSkipTiffinRecordApiEndpoint(String userPhoneNumber) {
+    return "$baseUrl/skipTiffinOperation/$userPhoneNumber";
   }
 
   String _getAddExtraTiffinRecordApiEndpoint(String userPhoneNumber) {
