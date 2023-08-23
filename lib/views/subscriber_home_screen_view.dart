@@ -5,6 +5,7 @@ import 'package:protofood/data_models/tiffin_data_model.dart';
 import 'package:protofood/data_models/user_data_model.dart';
 import 'package:protofood/service/computation_service.dart';
 import 'package:protofood/service/management_service.dart';
+import 'package:protofood/views/customer_chat_view.dart';
 import 'package:protofood/views/extra_tiffin_view.dart';
 import 'package:protofood/views/skip_tiffin_view.dart';
 import 'package:protofood/views/subscription_options_view.dart';
@@ -249,6 +250,8 @@ class _SubscriberHomeScreenViewState extends State<SubscriberHomeScreenView> {
                   // Home icon pressed
                 } else if (index == 2) {
                   // Customer support icon pressed
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => const CustomerChatView()));
                 }
               },
               items: const [
